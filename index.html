@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luyện nói IELTS</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f0f2f5; color: #1a1a1a; min-height: 100vh; padding: 24px 16px;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+
+  /* --- HEADER --- */
+  .header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .header-left h1 { font-size: 24px; margin-bottom: 4px; }
+  .header-left .subtitle { color: #666; font-size: 14px; }
+  .toolbar { display: flex; gap: 8px; }
+  .toolbar button {
+    padding: 9px 16px; font-size: 13px; border-radius: 8px; border: 1px solid #ddd;
+    background: #fff; cursor: pointer; font-weight: 500; color: #333;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .toolbar button:hover { background: #f5f5f5; }
+
+  /* --- TABS --- */
+  .tabs {
+    display: flex; gap: 4px; background: #fff; padding: 6px;
+    border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px;
+  }
+  .tab {
+    flex: 1; padding: 12px 16px; border: none; background: transparent;
+    border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 500;
+    color: #666; transition: all 0.15s; display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+  }
+  .tab:hover { background: #f5f5f5; color: #333; }
+  .tab.active { background: #4CAF50; color: #fff; box-shadow: 0 2px 8px rgba(76,175,80,0.3); }
+  .tab small { font-size: 11px; opacity: 0.8; font-weight: 400; }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade 0.2s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px);} to {opacity:1;transform:none;} }
+
+  .card {
+    background: #fff; border-radius: 12px; padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px;
+  }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .question-label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #999; font-weight: 600;
+  }
+  .question-label .counter { color: #999; font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+  .question {
+    font-size: 17px; line-height: 1.5; color: #222; padding: 12px 16px;
+    background: #f8f9fa; border-left: 3px solid #4CAF50; border-radius: 4px; margin-bottom: 12px;
+  }
+  .cue-card {
+    background: #fffbea; border: 1px dashed #f0c419; border-radius: 8px;
+    padding: 16px; margin: 12px 0; line-height: 1.7; font-size: 15px;
+  }
+  .cue-card .cue-topic { font-size: 17px; font-weight: 600; margin-bottom: 10px; color: #222; }
+  .cue-card .cue-hint { color: #666; font-size: 14px; margin-bottom: 8px; }
+  .cue-card ul { padding-left: 22px; }
+
+  /* --- TOPIC BAR --- */
+  .topic-bar { display: flex; gap: 8px; align-items: center; }
+  .topic-bar select {
+    flex: 1; padding: 10px 12px; font-size: 15px; border-radius: 8px;
+    border: 1px solid #ddd; background: #fff; cursor: pointer; font-weight: 500;
+  }
+  .topic-bar button {
+    padding: 10px 16px; font-size: 14px; border-radius: 8px; border: none;
+    cursor: pointer; background: #e8f5e9; color: #2e7d32; font-weight: 500;
+  }
+  .topic-bar button:hover { background: #c8e6c9; }
+  .topic-bar .btn-del { background: #ffebee; color: #c62828; padding: 10px 14px; }
+  .topic-bar .btn-del:hover { background: #ffcdd2; }
+
+  /* --- FORM --- */
+  .add-form {
+    margin-top: 14px; padding: 14px; background: #f8f9fa; border-radius: 8px; display: none;
+  }
+  .add-form.show { display: block; }
+  .add-form label { font-size: 13px; color: #666; display: block; margin: 10px 0 4px; }
+  .add-form label:first-child { margin-top: 0; }
+  .add-form code { background: #e0e0e0; padding: 1px 5px; border-radius: 3px; font-size: 12px; color: #333; }
+  .add-form input, .add-form textarea {
+    width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid #ddd;
+    border-radius: 6px; font-family: inherit;
+  }
+  .add-form textarea { min-height: 90px; resize: vertical; line-height: 1.5; }
+  .add-form .row { display: flex; gap: 8px; margin-top: 12px; }
+  .add-form .row button {
+    padding: 9px 18px; font-size: 14px; border: none; border-radius: 6px;
+    cursor: pointer; font-weight: 500;
+  }
+  .btn-save { background: #4CAF50; color: #fff; }
+  .btn-cancel { background: #eee; color: #333; }
+
+  /* --- TIMER --- */
+  .timer-wrap { margin-bottom: 4px; }
+  .timer-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+  .timer-fill {
+    height: 100%; width: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    transition: width 1s linear;
+  }
+  .timer-fill.warning { background: linear-gradient(90deg, #ff9800, #ffc107); }
+  .timer-fill.danger  { background: linear-gradient(90deg, #f44336, #ff5722); }
+  .timer-text {
+    font-size: 12px; color: #888; margin-top: 4px;
+    display: flex; justify-content: space-between;
+  }
+  .timer-text .count { font-weight: 600; color: #4CAF50; }
+  .timer-text .count.warning { color: #ff9800; }
+  .timer-text .count.danger  { color: #f44336; }
+
+  /* --- CONTROLS --- */
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  button.btn {
+    padding: 11px 20px; font-size: 15px; border: none; border-radius: 8px;
+    cursor: pointer; font-weight: 500; transition: all 0.15s;
+  }
+  .btn-start { background: #4CAF50; color: #fff; }
+  .btn-start:hover:not(:disabled) { background: #43a047; }
+  .btn-stop { background: #f44336; color: #fff; }
+  .btn-stop:hover:not(:disabled) { background: #e53935; }
+  .btn-next { background: #2196F3; color: #fff; }
+  .btn-next:hover:not(:disabled) { background: #1976D2; }
+  .btn-clear { background: #eee; color: #333; }
+  .btn-clear:hover { background: #e0e0e0; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .status { font-size: 13px; color: #666; margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; }
+  .dot.rec { background: #f44336; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* --- TRANSCRIPT --- */
+  .transcript {
+    min-height: 120px; max-height: 320px; overflow-y: auto;
+    background: #fafafa; border-radius: 8px; padding: 14px;
+    font-size: 16px; line-height: 1.6; border: 1px solid #eee;
+  }
+  .transcript:empty::before {
+    content: "Chưa có nội dung. Nhấn Bắt đầu nói...";
+    color: #bbb; font-style: italic;
+  }
+  .sentence {
+    padding: 8px 12px; margin: 6px 0; background: #fff;
+    border-left: 3px solid #4CAF50; border-radius: 4px; animation: fade 0.2s;
+  }
+  .sentence.interim { color: #999; font-style: italic; border-left-color: #ccc; background: #fcfcfc; }
+
+  /* --- Q LIST --- */
+  .q-list { list-style: none; margin-top: 12px; }
+  .q-list li {
+    padding: 8px 12px; border-radius: 6px; font-size: 14px; color: #555;
+    cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s;
+  }
+  .q-list li:hover { background: #f5f5f5; }
+  .q-list li.active { background: #e8f5e9; color: #2e7d32; font-weight: 500; border-left-color: #4CAF50; }
+  .q-list li.done { color: #999; text-decoration: line-through; }
+
+  /* --- RECORDINGS --- */
+  .rec-list { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
+  .rec-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px;
+  }
+  .rec-item .rec-label {
+    flex: 1; color: #555; overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    line-height: 1.35;
+  }
+  .rec-item audio { height: 32px; flex-shrink: 0; }
+  .rec-item .btn-dl {
+    padding: 5px 10px; font-size: 12px; border: none; border-radius: 4px;
+    background: #e3f2fd; color: #1976D2; cursor: pointer; flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .rec-item .btn-dl:hover { background: #bbdefb; }
+  .empty-hint { color: #bbb; font-style: italic; font-size: 13px; padding: 4px 0; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #333; color: #fff; padding: 12px 24px; border-radius: 8px;
+    font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 999; pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-left">
+      <h1>🎤 Luyện nói IELTS</h1>
+      <p class="subtitle">Nói và xem chữ hiện ra — có ghi âm để nghe lại</p>
+    </div>
+    <div class="toolbar">
+      <button id="export-btn">⬇ Export JSON</button>
+      <button id="import-btn">⬆ Import JSON</button>
+      <input type="file" id="import-file" accept=".json,application/json" style="display:none">
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="1">Part 1<small>Interview</small></button>
+    <button class="tab" data-tab="2">Part 2<small>Cue Card</small></button>
+    <button class="tab" data-tab="3">Part 3<small>Discussion</small></button>
+  </div>
+
+  <!-- ================= PART 1 ================= -->
+  <div class="panel active" id="panel-1">
+    <div class="card">
+      <div class="question-label">Topic</div>
+      <div class="topic-bar" style="margin-top:8px;">
+        <select id="topic-select"></select>
+        <button id="add-topic-btn">+ Thêm</button>
+        <button class="btn-del" id="del-topic-btn" title="Xóa topic">✕</button>
+      </div>
+      <div class="add-form" id="add-form-1">
+        <input id="new-topic-name" placeholder="Tên topic (VD: Hometown, Work & Study...)">
+        <label>Mỗi dòng 1 câu hỏi</label>
+        <textarea id="new-topic-questions" placeholder="Where are you from?&#10;What do you like about your hometown?"></textarea>
+        <div class="row">
+          <button class="btn-save" id="save-topic">Lưu topic</button>
+          <button class="btn-cancel" id="cancel-topic">Hủy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Câu hỏi</div>
+        <div class="question-label"><span class="counter" id="counter-1"></span></div>
+      </div>
+      <div class="question" id="question-1">—</div>
+      <ul class="q-list" id="q-list-1"></ul>
+    </div>
+
+    <div class="card">
+      <div class="timer-wrap">
+        <div class="timer-bar"><div class="timer-fill" id="timer-fill-1"></div></div>
+        <div class="timer-text">
+          <span>Thời gian mỗi câu (40s)</span>
+          <span class="count" id="timer-text-1">40s</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-start" id="start-1">▶ Bắt đầu (40s)</button>
+        <button class="btn btn-stop" id="stop-1" disabled>⏹ Dừng</button>
+        <button class="btn btn-next" id="next-1">Câu tiếp →</button>
+        <button class="btn btn-clear" id="clear-1">🗑 Xóa chữ</button>
+        <div class="status"><span class="dot" id="dot-1"></span><span id="status-1">Sẵn sàng</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="question-label">Câu trả lời của bạn</div>
+      <div class="transcript" id="transcript-1"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Bản ghi âm</div>
+        <button class="btn-clear" style="padding:5px 12px;font-size:12px;border-radius:6px;border:none;cursor:pointer;"
+                onclick="clearRecordings(1)">Xóa hết</button>
+      </div>
+      <div class="rec-list" id="rec-list-1"><div class="empty-hint">Chưa có bản ghi âm nào.</div></div>
+    </div>
+  </div>
+
+  <!-- ================= PART 2 ================= -->
+  <div class="panel" id="panel-2">
+    <div class="card">
+      <div class="question-label">Bộ topic — Part 2 + Part 3 (dùng chung)</div>
+      <div class="topic-bar" style="margin-top:8px;">
+        <select id="set-select"></select>
+        <button id="add-set-btn">+ Thêm bộ</button>
+        <button class="btn-del" id="del-set-btn" title="Xóa bộ">✕</button>
+      </div>
+      <div class="add-form" id="add-form-2">
+        <input id="new-set-name" placeholder="Tên bộ topic (VD: People, Places...)">
+        <label>Part 2 — Cue cards. Mỗi cue card cách bằng dòng <code>---</code>. Dòng đầu = chủ đề, dòng sau là gợi ý (bắt đầu bằng <code>-</code>)</label>
+        <textarea id="new-set-p2" placeholder="Describe a person you admire.&#10;- Who this person is&#10;- How you know about them&#10;---&#10;Describe a place you like to visit.&#10;- Where it is"></textarea>
+        <label>Part 3 — Câu hỏi thảo luận (mỗi dòng 1 câu)</label>
+        <textarea id="new-set-p3" placeholder="Why do people admire famous people?&#10;How has fame changed in modern society?"></textarea>
+        <div class="row">
+          <button class="btn-save" id="save-set">Lưu bộ topic</button>
+          <button class="btn-cancel" id="cancel-set">Hủy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Cue card</div>
+        <div class="question-label"><span class="counter" id="counter-2"></span></div>
+      </div>
+      <div id="cue-2" class="cue-card"></div>
+      <ul class="q-list" id="q-list-2"></ul>
+    </div>
+
+    <div class="card">
+      <div class="timer-wrap">
+        <div class="timer-bar"><div class="timer-fill" id="timer-fill-2"></div></div>
+        <div class="timer-text">
+          <span>Thời gian mỗi cue card (2 phút)</span>
+          <span class="count" id="timer-text-2">120s</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-start" id="start-2">▶ Bắt đầu (2 phút)</button>
+        <button class="btn btn-stop" id="stop-2" disabled>⏹ Dừng</button>
+        <button class="btn btn-next" id="next-2">Cue tiếp →</button>
+        <button class="btn btn-clear" id="clear-2">🗑 Xóa chữ</button>
+        <div class="status"><span class="dot" id="dot-2"></span><span id="status-2">Sẵn sàng</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="question-label">Bài nói của bạn</div>
+      <div class="transcript" id="transcript-2"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Bản ghi âm</div>
+        <button class="btn-clear" style="padding:5px 12px;font-size:12px;border-radius:6px;border:none;cursor:pointer;"
+                onclick="clearRecordings(2)">Xóa hết</button>
+      </div>
+      <div class="rec-list" id="rec-list-2"><div class="empty-hint">Chưa có bản ghi âm nào.</div></div>
+    </div>
+  </div>
+
+  <!-- ================= PART 3 ================= -->
+  <div class="panel" id="panel-3">
+    <div class="card">
+      <div class="question-label">Bộ topic (dùng chung với Part 2)</div>
+      <div class="topic-bar" style="margin-top:8px;">
+        <select id="set-select-3"></select>
+        <span style="font-size:13px;color:#999;padding:0 6px;">Thêm/sửa ở tab Part 2</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Câu hỏi thảo luận</div>
+        <div class="question-label"><span class="counter" id="counter-3"></span></div>
+      </div>
+      <div class="question" id="question-3">—</div>
+      <ul class="q-list" id="q-list-3"></ul>
+    </div>
+
+    <div class="card">
+      <div class="timer-wrap">
+        <div class="timer-bar"><div class="timer-fill" id="timer-fill-3"></div></div>
+        <div class="timer-text">
+          <span>Thời gian mỗi câu (40s)</span>
+          <span class="count" id="timer-text-3">40s</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-start" id="start-3">▶ Bắt đầu (40s)</button>
+        <button class="btn btn-stop" id="stop-3" disabled>⏹ Dừng</button>
+        <button class="btn btn-next" id="next-3">Câu tiếp →</button>
+        <button class="btn btn-clear" id="clear-3">🗑 Xóa chữ</button>
+        <div class="status"><span class="dot" id="dot-3"></span><span id="status-3">Sẵn sàng</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="question-label">Câu trả lời của bạn</div>
+      <div class="transcript" id="transcript-3"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Bản ghi âm</div>
+        <button class="btn-clear" style="padding:5px 12px;font-size:12px;border-radius:6px;border:none;cursor:pointer;"
+                onclick="clearRecordings(3)">Xóa hết</button>
+      </div>
+      <div class="rec-list" id="rec-list-3"><div class="empty-hint">Chưa có bản ghi âm nào.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== CẤU HÌNH ================== */
+const DURATIONS = { 1: 40, 2: 120, 3: 40 };
+const LANG = 'en-US';
+const TOPIC_KEY = 'ielts_topics_v1';
+const SETS_KEY  = 'ielts_sets_v1';
+const EXPORT_VERSION = 1;
+
+/* ================== DỮ LIỆU MẶC ĐỊNH ================== */
+const DEFAULT_TOPICS = [
+  { name: 'Work & Study', questions: [
+      'Do you work or are you a student?',
+      'What do you like most about your job/studies?',
+      'Would you like to change your job in the future?'
+  ]},
+  { name: 'Hometown', questions: [
+      'Where is your hometown?',
+      'What do you like most about your hometown?',
+      'Has your hometown changed much in recent years?'
+  ]},
+  { name: 'Hobbies', questions: [
+      'What do you usually do in your free time?',
+      'Do you have any hobbies that you enjoy?',
+      'Have your hobbies changed since you were a child?'
+  ]},
+];
+
+const DEFAULT_SETS = [
+  {
+    name: 'People',
+    part2: [{ topic: 'Describe a person you admire.', bullets: [
+      'Who this person is', 'How you know about them',
+      'What qualities they have', 'And explain why you admire them'
+    ]}],
+    part3: [
+      'Why do people admire famous people?',
+      'How has fame changed in modern society?',
+      'Should children have role models? Why?'
+    ]
+  },
+  {
+    name: 'Places',
+    part2: [{ topic: 'Describe a place you like to visit.', bullets: [
+      'Where it is', 'How often you go there',
+      'What you do there', 'And explain why you like it'
+    ]}],
+    part3: [
+      'Why do people enjoy travelling to new places?',
+      'How does tourism affect local communities?',
+      'Do you think people will travel more or less in the future?'
+    ]
+  }
+];
+
+/* ================== STATE ================== */
+let topics   = loadJSON(TOPIC_KEY, DEFAULT_TOPICS);
+let sets     = loadJSON(SETS_KEY, DEFAULT_SETS);
+let topicIdx = 0, setIdx = 0;
+let q1Idx = 0, q2Idx = 0, q3Idx = 0;
+const recordings = { 1: [], 2: [], 3: [] };   // session-only, không lưu
+
+function loadJSON(key, fallback) {
+  try { const raw = localStorage.getItem(key); if (raw) return JSON.parse(raw); } catch(e) {}
+  return JSON.parse(JSON.stringify(fallback));
+}
+function saveTopics() { localStorage.setItem(TOPIC_KEY, JSON.stringify(topics)); }
+function saveSets()   { localStorage.setItem(SETS_KEY,  JSON.stringify(sets));   }
+
+/* ================== TABS ================== */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const id = tab.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
+    [1,2,3].forEach(p => {
+      if (String(p) !== String(id) && engines[p]?.isRecording) stopAll(p);
+    });
+  });
+});
+
+/* ================== PART 1 ================== */
+const topicSelect = document.getElementById('topic-select');
+
+function renderTopicSelect() {
+  topicSelect.innerHTML = topics.map((t,i) =>
+    `<option value="${i}" ${i===topicIdx?'selected':''}>${esc(t.name)} (${t.questions.length})</option>`
+  ).join('');
+}
+function renderQ1() {
+  const t = topics[topicIdx]; if (!t) return;
+  const q = t.questions[q1Idx] || '—';
+  document.getElementById('question-1').textContent = q;
+  document.getElementById('counter-1').textContent = `${q1Idx+1}/${t.questions.length}`;
+  document.getElementById('q-list-1').innerHTML = t.questions.map((_, i) => {
+    const cls = i === q1Idx ? 'active' : (i < q1Idx ? 'done' : '');
+    return `<li class="${cls}" onclick="jumpQ1(${i})">${i+1}. ${esc(t.questions[i])}</li>`;
+  }).join('');
+}
+function jumpQ1(i) {
+  if (engines[1]?.isRecording) stopAll(1);
+  q1Idx = i; resetTimer(1); renderQ1(); clearTranscript(1);
+}
+function nextQ1() {
+  if (engines[1]?.isRecording) stopAll(1);
+  q1Idx = (q1Idx + 1) % topics[topicIdx].questions.length;
+  resetTimer(1); renderQ1(); clearTranscript(1);
+}
+topicSelect.onchange = () => {
+  topicIdx = Number(topicSelect.value); q1Idx = 0;
+  if (engines[1]?.isRecording) stopAll(1);
+  resetTimer(1); renderQ1(); clearTranscript(1);
+};
+
+/* form topic P1 */
+const addForm1 = document.getElementById('add-form-1');
+document.getElementById('add-topic-btn').onclick = () => {
+  addForm1.classList.toggle('show');
+  if (addForm1.classList.contains('show')) document.getElementById('new-topic-name').focus();
+};
+document.getElementById('cancel-topic').onclick = () => {
+  addForm1.classList.remove('show');
+  document.getElementById('new-topic-name').value = '';
+  document.getElementById('new-topic-questions').value = '';
+};
+document.getElementById('save-topic').onclick = () => {
+  const name = document.getElementById('new-topic-name').value.trim();
+  const qs = document.getElementById('new-topic-questions').value.split('\n').map(s => s.trim()).filter(Boolean);
+  if (!name) return alert('Nhập tên topic!');
+  if (!qs.length) return alert('Nhập ít nhất 1 câu hỏi!');
+  topics.push({ name, questions: qs });
+  saveTopics();
+  topicIdx = topics.length - 1; q1Idx = 0;
+  renderTopicSelect(); renderQ1(); clearTranscript(1); resetTimer(1);
+  addForm1.classList.remove('show');
+  document.getElementById('new-topic-name').value = '';
+  document.getElementById('new-topic-questions').value = '';
+  toast('Đã lưu topic');
+};
+document.getElementById('del-topic-btn').onclick = () => {
+  if (topics.length <= 1) return alert('Phải còn ít nhất 1 topic!');
+  if (!confirm(`Xóa topic "${topics[topicIdx].name}"?`)) return;
+  topics.splice(topicIdx, 1); saveTopics();
+  topicIdx = 0; q1Idx = 0;
+  renderTopicSelect(); renderQ1(); clearTranscript(1); resetTimer(1);
+};
+
+/* ================== PART 2 + 3 ================== */
+const setSelect  = document.getElementById('set-select');
+const setSelect3 = document.getElementById('set-select-3');
+const addForm2   = document.getElementById('add-form-2');
+
+function renderSetDropdowns() {
+  const opts = sets.map((s,i) =>
+    `<option value="${i}" ${i===setIdx?'selected':''}>${esc(s.name)}</option>`
+  ).join('');
+  setSelect.innerHTML  = opts;
+  setSelect3.innerHTML = opts;
+}
+function renderCue() {
+  const s = sets[setIdx]; if (!s) return;
+  const cue = s.part2[q2Idx];
+  document.getElementById('counter-2').textContent = `${q2Idx+1}/${s.part2.length}`;
+  if (cue) {
+    document.getElementById('cue-2').innerHTML = `
+      <div class="cue-topic">${esc(cue.topic)}</div>
+      <div class="cue-hint">You should say:</div>
+      <ul>${cue.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>`;
+  } else {
+    document.getElementById('cue-2').innerHTML = '<em>Chưa có cue card cho bộ này</em>';
+  }
+  document.getElementById('q-list-2').innerHTML = s.part2.map((c,i) => {
+    const cls = i === q2Idx ? 'active' : (i < q2Idx ? 'done' : '');
+    return `<li class="${cls}" onclick="jumpQ2(${i})">${i+1}. ${esc(c.topic)}</li>`;
+  }).join('');
+}
+function renderQ3() {
+  const s = sets[setIdx]; if (!s) return;
+  const q = s.part3[q3Idx] || '—';
+  document.getElementById('question-3').textContent = q;
+  document.getElementById('counter-3').textContent = `${q3Idx+1}/${s.part3.length}`;
+  document.getElementById('q-list-3').innerHTML = s.part3.map((_, i) => {
+    const cls = i === q3Idx ? 'active' : (i < q3Idx ? 'done' : '');
+    return `<li class="${cls}" onclick="jumpQ3(${i})">${i+1}. ${esc(s.part3[i])}</li>`;
+  }).join('');
+}
+function renderSet() {
+  renderSetDropdowns(); renderCue(); renderQ3();
+  updateTimerUI(2); updateTimerUI(3);
+}
+function selectSet(newIdx) {
+  if (newIdx === setIdx) return;
+  setIdx = newIdx; q2Idx = 0; q3Idx = 0;
+  [1,2,3].forEach(p => { if (engines[p]?.isRecording) stopAll(p); });
+  clearTranscript(2); clearTranscript(3);
+  resetTimer(2); resetTimer(3);
+  renderSet();
+}
+setSelect.onchange  = () => selectSet(Number(setSelect.value));
+setSelect3.onchange = () => selectSet(Number(setSelect3.value));
+
+function jumpQ2(i) {
+  if (engines[2]?.isRecording) stopAll(2);
+  q2Idx = i; resetTimer(2); renderCue(); clearTranscript(2);
+}
+function nextQ2() {
+  if (engines[2]?.isRecording) stopAll(2);
+  q2Idx = (q2Idx + 1) % sets[setIdx].part2.length;
+  resetTimer(2); renderCue(); clearTranscript(2);
+}
+function jumpQ3(i) {
+  if (engines[3]?.isRecording) stopAll(3);
+  q3Idx = i; resetTimer(3); renderQ3(); clearTranscript(3);
+}
+function nextQ3() {
+  if (engines[3]?.isRecording) stopAll(3);
+  q3Idx = (q3Idx + 1) % sets[setIdx].part3.length;
+  resetTimer(3); renderQ3(); clearTranscript(3);
+}
+
+/* form bộ P2+3 */
+document.getElementById('add-set-btn').onclick = () => {
+  addForm2.classList.toggle('show');
+  if (addForm2.classList.contains('show')) document.getElementById('new-set-name').focus();
+};
+document.getElementById('cancel-set').onclick = () => {
+  addForm2.classList.remove('show');
+  ['new-set-name','new-set-p2','new-set-p3'].forEach(id => document.getElementById(id).value = '');
+};
+document.getElementById('save-set').onclick = () => {
+  const name  = document.getElementById('new-set-name').value.trim();
+  const part2 = parseCueCards(document.getElementById('new-set-p2').value);
+  const part3 = document.getElementById('new-set-p3').value.split('\n').map(s => s.trim()).filter(Boolean);
+  if (!name)         return alert('Nhập tên bộ topic!');
+  if (!part2.length) return alert('Cần ít nhất 1 cue card Part 2!');
+  if (!part3.length) return alert('Cần ít nhất 1 câu hỏi Part 3!');
+  sets.push({ name, part2, part3 });
+  saveSets();
+  setIdx = sets.length - 1; q2Idx = 0; q3Idx = 0;
+  renderSet();
+  clearTranscript(2); clearTranscript(3);
+  resetTimer(2); resetTimer(3);
+  addForm2.classList.remove('show');
+  ['new-set-name','new-set-p2','new-set-p3'].forEach(id => document.getElementById(id).value = '');
+  toast('Đã lưu bộ topic (Part 2 + 3)');
+};
+document.getElementById('del-set-btn').onclick = () => {
+  if (sets.length <= 1) return alert('Phải còn ít nhất 1 bộ!');
+  if (!confirm(`Xóa bộ "${sets[setIdx].name}"?`)) return;
+  sets.splice(setIdx, 1); saveSets();
+  setIdx = 0; q2Idx = 0; q3Idx = 0;
+  renderSet();
+  clearTranscript(2); clearTranscript(3);
+  resetTimer(2); resetTimer(3);
+};
+function parseCueCards(text) {
+  const blocks = text.split(/\n\s*-{3,}\s*\n/).map(b => b.trim()).filter(Boolean);
+  return blocks.map(block => {
+    const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+    const topic = lines[0] || 'Untitled';
+    const bullets = lines.slice(1).map(l => l.replace(/^[-*•]\s*|^\d+[.)]\s*/, '').trim()).filter(Boolean);
+    return { topic, bullets };
+  });
+}
+
+/* ================== TIMER ================== */
+const timerState = {
+  1: { left: DURATIONS[1], interval: null },
+  2: { left: DURATIONS[2], interval: null },
+  3: { left: DURATIONS[3], interval: null },
+};
+function startTimer(part) {
+  stopTimer(part);
+  timerState[part].left = DURATIONS[part];
+  updateTimerUI(part);
+  timerState[part].interval = setInterval(() => {
+    timerState[part].left--;
+    updateTimerUI(part);
+    if (timerState[part].left <= 0) {
+      stopAll(part);
+      setStatus(part, `⏰ Hết ${DURATIONS[part]}s — nhấn "Tiếp"`, false);
+    }
+  }, 1000);
+}
+function stopTimer(part) {
+  if (timerState[part].interval) {
+    clearInterval(timerState[part].interval);
+    timerState[part].interval = null;
+  }
+}
+function resetTimer(part) {
+  stopTimer(part);
+  timerState[part].left = DURATIONS[part];
+  updateTimerUI(part);
+}
+function updateTimerUI(part) {
+  const dur = DURATIONS[part];
+  const left = timerState[part].left;
+  const pct = (left / dur) * 100;
+  const fill = document.getElementById(`timer-fill-${part}`);
+  const txt  = document.getElementById(`timer-text-${part}`);
+  if (!fill) return;
+  fill.style.width = pct + '%';
+  txt.textContent = left + 's';
+  const warn   = left <= dur * 0.375 && left > dur * 0.125;
+  const danger = left <= dur * 0.125;
+  fill.classList.toggle('warning', warn);
+  fill.classList.toggle('danger',  danger);
+  txt.classList.toggle('warning',  warn);
+  txt.classList.toggle('danger',   danger);
+}
+
+/* ================== SPEECH RECOGNITION ================== */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const supported = !!SpeechRecognition;
+const engines = {};
+
+function createEngine(part) {
+  if (!supported) return null;
+  const rec = new SpeechRecognition();
+  rec.lang = LANG; rec.continuous = true; rec.interimResults = true;
+  const engine = { rec, finalText: '', isRecording: false, part };
+
+  rec.onresult = (event) => {
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const r = event.results[i];
+      if (r.isFinal) engine.finalText += r[0].transcript.trim() + '\n';
+      else interim += r[0].transcript;
+    }
+    renderTranscript(part, engine.finalText, interim);
+  };
+  rec.onerror = (e) => {
+    setStatus(part, '⚠️ ' + e.error, false);
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      engine.isRecording = false; setUI(part, false);
+    }
+  };
+  rec.onend = () => {
+    if (engine.isRecording) { try { rec.start(); } catch (e) {} }
+    else setUI(part, false);
+  };
+  return engine;
+}
+function startSpeech(part) {
+  if (!supported) return alert('Dùng Chrome hoặc Edge nhé!');
+  if (!engines[part]) engines[part] = createEngine(part);
+  const e = engines[part];
+  e.isRecording = true;
+  try { e.rec.start(); } catch (err) {}
+  setUI(part, true);
+  setStatus(part, 'Đang nghe...', true);
+}
+function stopSpeech(part) {
+  const e = engines[part];
+  if (!e) return;
+  e.isRecording = false;
+  try { e.rec.stop(); } catch (err) {}
+  setUI(part, false);
+}
+
+/* ================== AUDIO RECORDING (MediaRecorder) ================== */
+let mediaRecorder = null;
+let mediaStream = null;
+
+async function startAudio(part) {
+  try {
+    if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+    mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    const chunks = [];                              // local → không bị race khi start lại
+    const rec = new MediaRecorder(mediaStream);
+    rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+    rec.onstop = () => {
+      const blob = new Blob(chunks, { type: rec.mimeType || 'audio/webm' });
+      if (blob.size > 0) addRecording(part, blob);
+    };
+    rec.start();
+    mediaRecorder = rec;
+  } catch (e) {
+    console.warn('Không ghi âm được:', e);
+    // vẫn tiếp tục speech recognition
+  }
+}
+function stopAudio() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    try { mediaRecorder.stop(); } catch (e) {}
+  }
+  mediaRecorder = null;
+  if (mediaStream) {
+    mediaStream.getTracks().forEach(t => t.stop());
+    mediaStream = null;
+  }
+}
+
+/* ================== START/STOP ALL ================== */
+function startAll(part) {
+  clearTranscript(part);
+  startSpeech(part);
+  startAudio(part);
+  startTimer(part);
+}
+function stopAll(part) {
+  stopSpeech(part);
+  stopAudio();
+  stopTimer(part);
+  setStatus(part, 'Đã dừng', false);
+}
+
+/* ================== RECORDINGS UI ================== */
+function getCurrentLabel(part) {
+  if (part === 1) {
+    const t = topics[topicIdx];
+    return `${t.name} · Q${q1Idx+1}: ${t.questions[q1Idx] || ''}`;
+  }
+  if (part === 2) {
+    const s = sets[setIdx];
+    const c = s.part2[q2Idx];
+    return `${s.name} · Cue ${q2Idx+1}: ${c?.topic || ''}`;
+  }
+  if (part === 3) {
+    const s = sets[setIdx];
+    return `${s.name} · Q${q3Idx+1}: ${s.part3[q3Idx] || ''}`;
+  }
+}
+function addRecording(part, blob) {
+  const url = URL.createObjectURL(blob);
+  const now = new Date();
+  const entry = {
+    label: getCurrentLabel(part),
+    url, blob,
+    ts: now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+    ext: blob.type.includes('mp4') ? 'm4a' : 'webm',
+  };
+  recordings[part].unshift(entry);     // mới nhất lên đầu
+  renderRecordings(part);
+}
+function renderRecordings(part) {
+  const el = document.getElementById(`rec-list-${part}`);
+  const list = recordings[part];
+  if (!list.length) {
+    el.innerHTML = '<div class="empty-hint">Chưa có bản ghi âm nào.</div>';
+    return;
+  }
+  el.innerHTML = list.map((r, i) => `
+    <div class="rec-item">
+      <div class="rec-label" title="${esc(r.label)}">[${r.ts}] ${esc(r.label)}</div>
+      <audio controls preload="metadata" src="${r.url}"></audio>
+      <button class="btn-dl" onclick="downloadRec(${part}, ${i})">⬇ Tải</button>
+    </div>
+  `).join('');
+}
+function downloadRec(part, idx) {
+  const r = recordings[part][idx];
+  if (!r) return;
+  const safe = r.label.replace(/[\\/:*?"<>|]/g, '_').slice(0, 60);
+  const filename = `rec-p${part}-${Date.now()}.${r.ext}`;
+  downloadBlob(r.blob, filename);
+}
+function clearRecordings(part) {
+  if (!recordings[part].length) return;
+  if (!confirm(`Xóa hết ${recordings[part].length} bản ghi âm của Part ${part}?`)) return;
+  recordings[part].forEach(r => URL.revokeObjectURL(r.url));
+  recordings[part] = [];
+  renderRecordings(part);
+}
+
+/* ================== UI HELPERS ================== */
+function setUI(part, recording) {
+  document.getElementById(`start-${part}`).disabled = recording;
+  document.getElementById(`stop-${part}`).disabled  = !recording;
+}
+function setStatus(part, text, rec) {
+  document.getElementById(`status-${part}`).textContent = text;
+  document.getElementById(`dot-${part}`).classList.toggle('rec', rec);
+}
+function renderTranscript(part, finalText, interim) {
+  const el = document.getElementById(`transcript-${part}`);
+  const sentences = finalText.split(/\n+/).filter(Boolean);
+  el.innerHTML =
+    sentences.map(s => `<div class="sentence">${esc(s)}</div>`).join('') +
+    (interim ? `<div class="sentence interim">${esc(interim)}</div>` : '');
+  el.scrollTop = el.scrollHeight;
+}
+function clearTranscript(part) {
+  if (engines[part]) engines[part].finalText = '';
+  document.getElementById(`transcript-${part}`).innerHTML = '';
+}
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])
+  );
+}
+function toast(msg, ms = 2000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+/* ================== BIND BUTTONS ================== */
+[1,2,3].forEach(part => {
+  document.getElementById(`start-${part}`).onclick = () => startAll(part);
+  document.getElementById(`stop-${part}`).onclick  = () => stopAll(part);
+  document.getElementById(`clear-${part}`).onclick = () => clearTranscript(part);
+});
+document.getElementById('next-1').onclick = nextQ1;
+document.getElementById('next-2').onclick = nextQ2;
+document.getElementById('next-3').onclick = nextQ3;
+
+/* ================== DOWNLOAD HELPER ================== */
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+/* ================== EXPORT / IMPORT JSON ================== */
+document.getElementById('export-btn').onclick = () => {
+  const data = {
+    version: EXPORT_VERSION,
+    exportedAt: new Date().toISOString(),
+    topics,
+    sets,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const date = new Date().toISOString().slice(0, 10);
+  downloadBlob(blob, `ielts-speaking-${date}.json`);
+  toast('Đã xuất file JSON');
+};
+
+document.getElementById('import-btn').onclick = () => {
+  document.getElementById('import-file').click();
+};
+document.getElementById('import-file').onchange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (!data.topics && !data.sets) throw new Error('Thiếu dữ liệu');
+      const confirmMsg = `Import dữ liệu?\n` +
+        `- ${data.topics?.length ?? 0} topic Part 1\n` +
+        `- ${data.sets?.length ?? 0} bộ topic Part 2+3\n\n` +
+        `Sẽ GHI ĐÈ dữ liệu hiện tại.`;
+      if (!confirm(confirmMsg)) return;
+      if (data.topics) topics = data.topics;
+      if (data.sets)   sets   = data.sets;
+      saveTopics(); saveSets();
+      topicIdx = 0; q1Idx = 0; setIdx = 0; q2Idx = 0; q3Idx = 0;
+      renderTopicSelect(); renderQ1(); renderSet();
+      clearTranscript(1); clearTranscript(2); clearTranscript(3);
+      resetTimer(1); resetTimer(2); resetTimer(3);
+      toast('Import thành công!');
+    } catch (err) {
+      alert('File JSON không hợp lệ: ' + err.message);
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+};
+
+/* ================== INIT ================== */
+renderTopicSelect();
+renderQ1();
+renderSet();
+[1,2,3].forEach(p => { updateTimerUI(p); renderRecordings(p); });
+
+// cảnh báo nếu không hỗ trợ
+if (!supported) {
+  toast('Trình duyệt không hỗ trợ Speech Recognition. Dùng Chrome/Edge.', 5000);
+}
+</script>
+</body>
+</html>
