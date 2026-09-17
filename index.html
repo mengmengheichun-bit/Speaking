@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luyện nói IELTS</title>
+<title>Luyện nói IELTS — Practice & Mock Test</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -228,6 +228,21 @@
     font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 999; pointer-events: none;
   }
   .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  .upgrade-note { color: #666; font-size: 13px; line-height: 1.6; margin: 8px 0; }
+  .prep-box { background: #fffbea; border: 1px solid #f0df98; padding: 16px; border-radius: 10px; margin-bottom: 16px; }
+  .prep-clock { font-size: 28px; font-weight: 700; color: #8a6800; }
+  #prep-notes { width: 100%; min-height: 90px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font: inherit; margin-top: 10px; }
+  .feedback { margin-top: 12px; line-height: 1.6; font-size: 14px; }
+  .feedback ul { padding-left: 20px; }
+  .feedback-metrics { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+  .feedback-metrics span { padding: 7px 12px; background: #edf4ff; border-radius: 8px; }
+  #mock-progress { font-weight: 600; color: #2e7d32; margin-top: 12px; line-height: 1.5; }
+  #mock-summary details { border-top: 1px solid #eee; padding: 10px 0; }
+  #mock-summary summary { cursor: pointer; font-weight: 500; }
+  #mock-summary .answer-text { white-space: pre-wrap; padding: 10px; background: #fafafa; border-radius: 8px; margin-top: 8px; }
+  body.mock-running .q-list { pointer-events: none; opacity: .65; }
+  @media (max-width: 600px) { .rec-item { flex-wrap: wrap; } .rec-item audio { max-width: 100%; } .topic-bar { flex-wrap: wrap; } }
 </style>
 </head>
 <body>
@@ -252,6 +267,18 @@
     </select>
     <select id="voice-select"></select>
     <button class="btn-test" id="test-voice-btn">🔊 Test</button>
+  </div>
+
+  <div class="card" id="mock-card">
+    <h2 style="font-size:18px;">🧪 Thi thử Speaking</h2>
+    <p class="upgrade-note">Bài luyện rút gọn: tối đa 3 câu Part 1 (40 giây/câu) → 1 cue card (60 giây chuẩn bị + 2 phút nói) → tối đa 3 câu Part 3 (40 giây/câu). Dùng topic Part 1 và bộ Part 2/3 đang chọn. Đây không phải thời lượng đầy đủ của bài thi IELTS.</p>
+    <div class="controls">
+      <button class="btn btn-start" id="mock-start">▶ Bắt đầu thi thử</button>
+      <button class="btn btn-stop" id="mock-stop" disabled>⏹ Kết thúc thi thử</button>
+      <button class="btn btn-clear" id="mock-download" disabled>⬇ Tải kết quả</button>
+    </div>
+    <div id="mock-progress" role="status" aria-live="polite">Chọn topic bên dưới rồi bắt đầu. Web sẽ đọc câu hỏi và tự chuyển sang ghi âm.</div>
+    <div id="mock-summary" hidden></div>
   </div>
 
   <div class="tabs">
@@ -318,6 +345,7 @@
     <div class="card">
       <div class="question-label">Câu trả lời của bạn</div>
       <div class="transcript" id="transcript-1"></div>
+      <div class="feedback" id="feedback-1" aria-live="polite"><p class="upgrade-note">Sau khi dừng ghi âm, bạn sẽ thấy thời lượng và thống kê từ transcript. Thống kê này không phải chấm band IELTS.</p></div>
     </div>
 
     <div class="card">
@@ -362,6 +390,13 @@
     </div>
 
     <div class="card">
+      <div class="prep-box">
+        <strong>📝 Chuẩn bị Part 2</strong>
+        <p class="upgrade-note" id="prep-status">Nhấn “Chuẩn bị rồi nói” để ghi ý trong 1 phút. Hết giờ, web tự bắt đầu ghi âm 2 phút.</p>
+        <div class="prep-clock" id="prep-clock" aria-live="off">60s</div>
+        <textarea id="prep-notes" aria-label="Ghi chú chuẩn bị Part 2" placeholder="Ghi từ khóa: ai / ở đâu / chuyện gì / vì sao…"></textarea>
+        <div class="controls"><button class="btn btn-next" id="prep-skip" disabled>Nói ngay →</button><button class="btn btn-clear" id="prep-cancel" disabled>Hủy chuẩn bị</button></div>
+      </div>
       <div class="timer-wrap">
         <div class="timer-bar"><div class="timer-fill" id="timer-fill-2"></div></div>
         <div class="timer-text">
@@ -370,7 +405,7 @@
         </div>
       </div>
       <div class="controls">
-        <button class="btn btn-start" id="start-2">▶ Bắt đầu (2 phút)</button>
+        <button class="btn btn-start" id="start-2">▶ Chuẩn bị rồi nói</button>
         <button class="btn btn-stop" id="stop-2" disabled>⏹ Dừng</button>
         <button class="btn btn-next" id="next-2">Cue tiếp →</button>
         <button class="btn btn-clear" id="clear-2">🗑 Xóa chữ</button>
@@ -381,6 +416,7 @@
     <div class="card">
       <div class="question-label">Bài nói của bạn</div>
       <div class="transcript" id="transcript-2"></div>
+      <div class="feedback" id="feedback-2" aria-live="polite"><p class="upgrade-note">Sau khi dừng ghi âm, bạn sẽ thấy thời lượng và thống kê từ transcript. Thống kê này không phải chấm band IELTS.</p></div>
     </div>
 
     <div class="card">
@@ -441,6 +477,7 @@
     <div class="card">
       <div class="question-label">Câu trả lời của bạn</div>
       <div class="transcript" id="transcript-3"></div>
+      <div class="feedback" id="feedback-3" aria-live="polite"><p class="upgrade-note">Sau khi dừng ghi âm, bạn sẽ thấy thời lượng và thống kê từ transcript. Thống kê này không phải chấm band IELTS.</p></div>
     </div>
 
     <div class="card">
@@ -541,7 +578,7 @@ document.querySelectorAll('.tab').forEach(tab => {
     document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
     document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
     [1,2,3].forEach(p => {
-      if (String(p) !== String(id) && engines[p]?.isRecording) stopAll(p);
+      if (String(p) !== String(id) && (engines[p]?.isRecording || engines[p]?.starting || p === 2 && preparation.active)) stopAll(p);
     });
     stopTTS();
   });
@@ -697,11 +734,11 @@ function render(p) {
     const li = document.createElement('li');
     li.textContent = p === 2 ? q.topic : q;
     li.classList.toggle('active', i === index);
-    li.onclick = () => { stopAll(p); stopTTS(); if (p === 1) q1Idx = i; else if (p === 2) q2Idx = i; else q3Idx = i; resetReveal(p); render(p); };
+    li.onclick = () => { if (mock.active) return; stopAll(p); stopTTS(); if (p === 1) q1Idx = i; else if (p === 2) q2Idx = i; else q3Idx = i; resetReveal(p); render(p); };
     $('q-list-' + p).append(li);
   });
   if (p === 2) {
-    $('cue-2').replaceChildren();
+    $('cue-2').replaceChildren(); $('prep-notes').value = '';
     const cue = items[index];
     if (cue) {
       const title = document.createElement('div'); title.className = 'cue-topic'; title.textContent = cue.topic;
@@ -714,6 +751,7 @@ function render(p) {
   $('next-' + p).disabled = items.length < 2;
   $('start-' + p).disabled = !items.length || engines[p].isRecording;
   updateTimer(p, DURATIONS[p]);
+  lockMockControls();
 }
 function changeTopic() { stopAll(1); stopTTS(); topicIdx = Number($('topic-select').value); q1Idx = 0; resetReveal(1); render(1); }
 function changeSet(value) { stopAll(2); stopAll(3); stopTTS(); setIdx = Number(value); q2Idx = q3Idx = 0; populateSets(); resetReveal(3); render(2); render(3); }
@@ -771,7 +809,11 @@ function renderRecordings(p) {
 }
 function clearRecordings(p) { recordings[p].forEach(r => URL.revokeObjectURL(r.url)); recordings[p] = []; renderRecordings(p); }
 function stopAll(p) {
-  const e = engines[p]; e.token++; e.starting = false; e.isRecording = false;
+  const e = engines[p];
+  if (p === 2 && preparation.active) cancelPreparation();
+  const finishedSession = e.isRecording ? e.session : null;
+  if (finishedSession) finishedSession.seconds = Math.min(DURATIONS[p], Math.max(0, (Date.now() - finishedSession.startedAt) / 1000));
+  e.token++; e.starting = false; e.isRecording = false;
   clearInterval(e.timer); e.timer = null;
   try { e.recognition?.stop(); } catch(err) {}
   e.recognition = null;
@@ -779,8 +821,19 @@ function stopAll(p) {
   e.stream?.getTracks().forEach(t => t.stop()); e.stream = null;
   $('start-' + p).disabled = false; $('stop-' + p).disabled = true;
   $('dot-' + p).classList.remove('rec'); $('status-' + p).textContent = 'Sẵn sàng';
+  lockMockControls();
+  if (finishedSession) setTimeout(() => {
+    showFeedback(finishedSession, $('feedback-' + p));
+    if (finishedSession.mockId && finishedSession.mockId === mock.id) {
+      mock.answers.push(finishedSession);
+      if (mock.active) { mock.index++; runMockStep(); }
+      else renderMockSummary();
+    }
+  }, 500);
 }
-async function start(p) {
+
+async function start(p, afterPreparation = false) {
+  if (p === 2 && !afterPreparation) return beginPreparation();
   const e = engines[p]; if (e.isRecording || e.starting) return;
   if (p !== 2 && !getQuestionText(p) || p === 2 && !sets[setIdx]?.part2[q2Idx]) return toast('Chưa có câu hỏi.');
   [1,2,3].forEach(stopAll); stopTTS(); e.starting = true; const token = ++e.token;
@@ -800,6 +853,9 @@ async function start(p) {
       recordings[p].push({url: URL.createObjectURL(blob), label, ext: mime.includes('mp4') ? 'm4a' : mime.includes('ogg') ? 'ogg' : 'webm'}); renderRecordings(p);
     };
     recorder.start(); e.isRecording = true; e.starting = false;
+    const session = { part: p, question: label, text: '', seconds: 0, startedAt: Date.now(), mockId: mock.active ? mock.id : null, notes: p === 2 ? $('prep-notes').value : '' };
+    e.session = session;
+    lockMockControls();
     $('stop-' + p).disabled = false; $('dot-' + p).classList.add('rec'); $('status-' + p).textContent = 'Đang ghi âm';
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (Recognition) {
@@ -810,23 +866,24 @@ async function start(p) {
         let interim = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const text = event.results[i][0].transcript;
+          if (event.results[i].isFinal) session.text += (session.text ? ' ' : '') + text.trim();
           if (event.results[i].isFinal) { const line = document.createElement('div'); line.className = 'sentence'; line.textContent = text; $('transcript-' + p).append(line); }
           else interim += text;
         }
         if (interim) { const line = document.createElement('div'); line.className = 'sentence interim'; line.textContent = interim; $('transcript-' + p).append(line); }
       };
-      recognition.onerror = () => { $('status-' + p).textContent = 'Đang ghi âm (không nhận dạng được chữ)'; };
+      recognition.onerror = event => { if (!e.isRecording || e.recognition !== recognition) return; if (['not-allowed', 'service-not-allowed', 'network', 'audio-capture', 'language-not-supported'].includes(event.error)) e.recognition = null; $('status-' + p).textContent = 'Đang ghi âm (không nhận dạng được chữ)'; };
       recognition.onend = () => { if (e.isRecording && e.recognition === recognition) { try { recognition.start(); } catch(err) {} } };
       try { recognition.start(); } catch(err) { toast('Vẫn ghi âm, nhưng không bật được nhận dạng giọng nói.'); }
     } else toast('Trình duyệt vẫn ghi âm nhưng không hỗ trợ chuyển giọng nói thành chữ.');
     let left = DURATIONS[p]; updateTimer(p, left);
-    e.timer = setInterval(() => { updateTimer(p, --left); if (left <= 0) stopAll(p); }, 1000);
-  } catch(err) { stopAll(p); toast(err.message === 'unsupported' ? 'Trình duyệt không hỗ trợ ghi âm ở trang này.' : 'Không mở được micro. Hãy kiểm tra quyền micro của trình duyệt.'); }
+    e.timer = setInterval(() => { left = Math.max(0, DURATIONS[p] - Math.floor((Date.now() - session.startedAt) / 1000)); updateTimer(p, left); if (left <= 0) stopAll(p); }, 250);
+  } catch(err) { if (mock.active) finishMock('Thi thử dừng vì chưa mở được micro.'); stopAll(p); toast(err.message === 'unsupported' ? 'Trình duyệt không hỗ trợ ghi âm ở trang này.' : 'Không mở được micro. Hãy kiểm tra quyền micro của trình duyệt.'); }
 }
 [1,2,3].forEach(p => {
   $('start-' + p).onclick = () => start(p);
   $('stop-' + p).onclick = () => stopAll(p);
-  $('clear-' + p).onclick = () => $('transcript-' + p).replaceChildren();
+  $('clear-' + p).onclick = () => { $('transcript-' + p).replaceChildren(); $('feedback-' + p).replaceChildren(); };
   $('next-' + p).onclick = () => {
     stopAll(p); stopTTS();
     if (p === 1) q1Idx = (q1Idx + 1) % (topics[topicIdx]?.questions.length || 1);
@@ -853,6 +910,170 @@ $('import-file').onchange = async () => {
   } catch(err) { toast('File JSON không đúng định dạng. Hãy chọn file đã Export từ ứng dụng.'); }
   finally { $('import-file').value = ''; }
 };
+/* Preparation, mock-test flow and transcript-based feedback. */
+const preparation = { active: false, timer: null, deadline: 0 };
+const mock = { active: false, id: 0, index: 0, steps: [], answers: [], readTimer: null, message: '' };
+const lockedControls = new Map();
+function lockMockControls() {
+  const controls = document.querySelectorAll('.tab, .topic-bar button, .topic-bar select, .add-form input, .add-form textarea, .add-form button, #import-btn, #import-file, #test-voice-btn, #engine-select, #voice-select, .btn-start:not(#mock-start), .btn-next:not(#prep-skip), .btn-listen, .btn-reveal, .controls .btn-clear:not(#mock-download):not(#prep-cancel)');
+  if (mock.active) controls.forEach(el => { if (!lockedControls.has(el)) lockedControls.set(el, el.disabled); el.disabled = true; });
+  else { lockedControls.forEach((disabled, el) => el.disabled = disabled); lockedControls.clear(); }
+  document.body.classList.toggle('mock-running', mock.active);
+  $('mock-start').disabled = mock.active;
+  $('mock-stop').disabled = !mock.active;
+  $('prep-cancel').disabled = !preparation.active || mock.active;
+}
+function cancelPreparation() {
+  clearInterval(preparation.timer); preparation.timer = null; preparation.active = false;
+  $('prep-skip').disabled = $('prep-cancel').disabled = true;
+  $('prep-clock').textContent = '60s';
+  $('prep-status').textContent = 'Nhấn “Chuẩn bị rồi nói” để ghi ý trong 1 phút. Hết giờ, web tự bắt đầu ghi âm 2 phút.';
+  $('start-2').disabled = false;
+}
+function completePreparation() {
+  if (!preparation.active) return;
+  cancelPreparation();
+  $('prep-clock').textContent = '0s';
+  $('prep-status').textContent = 'Đã hết thời gian chuẩn bị. Bắt đầu nói trong 2 phút.';
+  start(2, true);
+}
+function beginPreparation() {
+  if (preparation.active || engines[2].isRecording || engines[2].starting) return;
+  if (!sets[setIdx]?.part2[q2Idx]) return toast('Chưa có cue card. Hãy thêm bộ topic.');
+  [1,2,3].forEach(stopAll); stopTTS();
+  preparation.active = true; preparation.deadline = Date.now() + 60000;
+  $('prep-clock').textContent = '60s';
+  $('prep-status').textContent = 'Đang chuẩn bị. Ghi từ khóa bên dưới; micro chưa ghi âm.';
+  $('prep-skip').disabled = false; $('prep-cancel').disabled = mock.active;
+  $('start-2').disabled = true; $('prep-notes').focus();
+  preparation.timer = setInterval(() => {
+    const left = Math.max(0, Math.ceil((preparation.deadline - Date.now()) / 1000));
+    $('prep-clock').textContent = left + 's';
+    if (!left) completePreparation();
+  }, 250);
+}
+$('prep-skip').onclick = completePreparation;
+$('prep-cancel').onclick = cancelPreparation;
+function feedbackData(session) {
+  const words = session.text.match(/[A-Za-z]+(?:['’-][A-Za-z]+)*/g) || [];
+  const seconds = Math.round(session.seconds);
+  const notes = [];
+  if (!words.length) notes.push('Chưa có transcript để phân tích. Bạn vẫn có thể nghe bản ghi âm; kiểm tra quyền nhận dạng giọng nói nếu muốn hiện chữ.');
+  else {
+    notes.push('Số từ lấy từ phần chữ trình duyệt nhận dạng được, có thể thiếu hoặc sai.');
+    if (session.part === 1) notes.push('Khi nghe lại, kiểm tra: trả lời trực tiếp → thêm lý do hoặc một ví dụ ngắn.');
+    if (session.part === 2) notes.push('Đối chiếu bài nói với các gợi ý cue card. Thử kể một chi tiết cụ thể và giải thích cảm xúc hoặc lý do ở cuối.');
+    if (session.part === 3) notes.push('Khi nghe lại, kiểm tra: có quan điểm rõ → giải thích → ví dụ hoặc so sánh hai góc nhìn.');
+    const fillers = session.text.match(/\b(?:um|uh|erm|you know|i mean)\b/gi) || [];
+    if (fillers.length) notes.push(`Transcript có ${fillers.length} lần xuất hiện “${[...new Set(fillers.map(s => s.toLowerCase()))].join('”, “')}”. Nghe lại để xem có cần thay bằng một nhịp nghỉ ngắn không.`);
+  }
+  if (session.part === 2 && seconds < 90) notes.push('Bạn kết thúc trước 90 giây. Có thể thử mở rộng một ý bằng một câu chuyện hoặc ví dụ cụ thể.');
+  return { seconds, words: words.length, pace: words.length && seconds >= 10 ? Math.round(words.length * 60 / session.seconds) : null, notes };
+}
+function showFeedback(session, container) {
+  container.replaceChildren();
+  const data = feedbackData(session);
+  const title = document.createElement('strong'); title.textContent = '📊 Phản hồi sau câu trả lời';
+  const metrics = document.createElement('div'); metrics.className = 'feedback-metrics';
+  const stats = [`${data.seconds}s ghi âm`, `${data.words} từ nhận dạng`];
+  if (data.pace !== null) stats.push(`~${data.pace} từ/phút theo transcript`);
+  stats.forEach(text => { const span = document.createElement('span'); span.textContent = text; metrics.append(span); });
+  const list = document.createElement('ul');
+  data.notes.forEach(text => { const li = document.createElement('li'); li.textContent = text; list.append(li); });
+  const caveat = document.createElement('p'); caveat.className = 'upgrade-note'; caveat.textContent = 'Đây là thống kê và gợi ý tự ôn; chưa dùng AI để chấm ngữ pháp, từ vựng hay phát âm, và không quy đổi thành band IELTS. Thời lượng tính cả khoảng im lặng.';
+  container.append(title, metrics, list, caveat);
+}
+function activatePart(p) {
+  document.querySelectorAll('.tab').forEach(el => el.classList.toggle('active', Number(el.dataset.tab) === p));
+  document.querySelectorAll('.panel').forEach(el => el.classList.toggle('active', el.id === 'panel-' + p));
+}
+function renderMockSummary() {
+  const container = $('mock-summary'); container.replaceChildren(); container.hidden = false;
+  const title = document.createElement('h3'); title.style.marginTop = '16px'; title.textContent = `Kết quả: ${mock.answers.length}/${mock.steps.length} câu đã trả lời`;
+  container.append(title);
+  mock.answers.forEach((answer, i) => {
+    const details = document.createElement('details');
+    const summary = document.createElement('summary'); summary.textContent = `${i + 1}. Part ${answer.part} — ${answer.question}`;
+    const feedback = document.createElement('div'); feedback.className = 'feedback'; showFeedback(answer, feedback);
+    const transcript = document.createElement('p'); transcript.className = 'answer-text'; transcript.textContent = answer.text || 'Chưa có transcript. Xem bản ghi âm trong tab tương ứng.';
+    details.append(summary, feedback, transcript);
+    if (answer.notes) { const notes = document.createElement('p'); notes.className = 'upgrade-note'; notes.textContent = 'Ghi chú chuẩn bị: ' + answer.notes; details.append(notes); }
+    container.append(details);
+  });
+  const hint = document.createElement('p'); hint.className = 'upgrade-note'; hint.textContent = 'Kết quả và bản ghi âm chỉ giữ trong lần mở trang này. Tải kết quả và các bản ghi âm cần giữ trước khi đóng hoặc tải lại trang.';
+  container.append(hint); $('mock-download').disabled = !mock.answers.length;
+}
+function finishMock(message) {
+  mock.active = false; mock.message = message;
+  clearTimeout(mock.readTimer); stopTTS(); cancelPreparation();
+  lockMockControls(); [1,2,3].forEach(stopAll);
+  [1,2,3].forEach(render);
+  $('mock-progress').textContent = message;
+  renderMockSummary();
+}
+function runMockStep() {
+  if (!mock.active) return;
+  if (mock.index >= mock.steps.length) return finishMock('Đã hoàn thành thi thử! Xem từng câu trả lời bên dưới và nghe lại bản ghi âm trong các tab.');
+  const step = mock.steps[mock.index], id = mock.id;
+  if (step.part === 1) q1Idx = step.index;
+  if (step.part === 2) q2Idx = step.index;
+  if (step.part === 3) q3Idx = step.index;
+  activatePart(step.part); resetReveal(step.part); render(step.part);
+  $('transcript-' + step.part).replaceChildren(); $('feedback-' + step.part).replaceChildren();
+  $('mock-progress').textContent = `Câu ${mock.index + 1}/${mock.steps.length} · Part ${step.part} · ${step.part === 2 ? 'Chuẩn bị 60 giây, sau đó nói 2 phút' : 'Nghe câu hỏi, sau đó nói 40 giây'}. Nút “Dừng” sẽ kết thúc câu hiện tại và chuyển tiếp.`;
+  if (step.part === 2) { $('prep-notes').value = ''; beginPreparation(); return; }
+  const text = getQuestionText(step.part);
+  qState[step.part].played = true;
+  $('reveal-btn-' + step.part).style.display = '';
+  $('q-hint-' + step.part).style.display = 'none';
+  // Reveal the question if voice playback is unavailable; never leave the flow stuck.
+  let handedOff = false;
+  const handOff = () => {
+    if (handedOff || !mock.active || mock.id !== id) return;
+    handedOff = true; clearTimeout(mock.readTimer); stopTTS();
+    start(step.part);
+  };
+  const showText = () => {
+    qState[step.part].revealed = true; $('q-content-' + step.part).style.display = '';
+    $('reveal-btn-' + step.part).textContent = '🙈 Ẩn câu hỏi';
+  };
+  stopTTS();
+  if (window.speechSynthesis && window.SpeechSynthesisUtterance) {
+    const utterance = new SpeechSynthesisUtterance(text); utterance.lang = LANG; utterance.rate = TTS_RATE; utterance.voice = ttsVoice;
+    $('listen-' + step.part).classList.add('playing');
+    utterance.onend = handOff;
+    utterance.onerror = () => { if (handedOff || !mock.active || mock.id !== id) return; clearTimeout(mock.readTimer); showText(); mock.readTimer = setTimeout(handOff, 4000); };
+    mock.readTimer = setTimeout(() => { showText(); handOff(); }, Math.max(15000, text.split(/\s+/).length * 900));
+    speechSynthesis.speak(utterance);
+  } else { showText(); mock.readTimer = setTimeout(handOff, 4000); }
+}
+$('mock-start').onclick = async () => {
+  if (mock.active) return;
+  if (!topics[topicIdx]?.questions.length || !sets[setIdx]?.part2.length || !sets[setIdx]?.part3.length) return toast('Cần topic Part 1, cue card Part 2 và câu hỏi Part 3 trước khi thi thử.');
+  [1,2,3].forEach(stopAll); cancelPreparation(); stopTTS();
+  mock.id++; mock.index = 0; mock.answers = [];
+  mock.steps = topics[topicIdx].questions.slice(0,3).map((q,index) => ({part:1,index}));
+  mock.steps.push({part:2,index:q2Idx});
+  mock.steps.push(...sets[setIdx].part3.slice(0,3).map((q,index) => ({part:3,index})));
+  mock.active = true; const id = mock.id; lockMockControls();
+  $('mock-summary').hidden = true; $('mock-download').disabled = true;
+  $('mock-progress').textContent = 'Đang kiểm tra micro. Cho phép micro để bắt đầu thi thử.';
+  try {
+    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) throw Error('unsupported');
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    stream.getTracks().forEach(track => track.stop());
+    if (mock.active && mock.id === id) runMockStep();
+  } catch(err) {
+    if (mock.id === id && mock.active) finishMock('Chưa bắt đầu được: hãy kiểm tra quyền micro rồi thử lại.');
+  }
+};
+$('mock-stop').onclick = () => finishMock('Đã kết thúc thi thử sớm. Các câu đã trả lời được giữ bên dưới.');
+$('mock-download').onclick = () => {
+  const result = { type: 'IELTS speaking practice results', createdAt: new Date().toISOString(), status: mock.message, completed: mock.answers.length, total: mock.steps.length, answers: mock.answers.map(a => ({part:a.part, question:a.question, transcript:a.text, preparationNotes:a.notes, feedback:feedbackData(a)})) };
+  const blob = new Blob([JSON.stringify(result, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = 'ielts-speaking-results.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
 populateTopics(); populateSets(); [1,2,3].forEach(render);
 </script>
 </body>
