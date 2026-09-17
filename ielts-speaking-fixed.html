@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luyện nói IELTS</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #f0f2f5; color: #1a1a1a; min-height: 100vh; padding: 24px 16px;
+  }
+  .container { max-width: 860px; margin: 0 auto; }
+
+  .header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .header-left h1 { font-size: 24px; margin-bottom: 4px; }
+  .header-left .subtitle { color: #666; font-size: 14px; }
+  .toolbar { display: flex; gap: 8px; }
+  .toolbar button {
+    padding: 9px 16px; font-size: 13px; border-radius: 8px; border: 1px solid #ddd;
+    background: #fff; cursor: pointer; font-weight: 500; color: #333;
+  }
+  .toolbar button:hover { background: #f5f5f5; }
+
+  .voice-bar {
+    display: flex; align-items: center; gap: 8px; background: #fff;
+    padding: 10px 14px; border-radius: 10px; margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); font-size: 13px; flex-wrap: wrap;
+  }
+  .voice-bar label { color: #666; font-weight: 500; white-space: nowrap; }
+  .voice-bar select {
+    padding: 8px 10px; font-size: 13px; border-radius: 6px;
+    border: 1px solid #ddd; background: #fff; cursor: pointer;
+  }
+  .voice-bar #engine-select { width: 200px; }
+  .voice-bar #voice-select { flex: 1; min-width: 200px; }
+  .voice-bar .btn-test {
+    padding: 8px 14px; font-size: 13px; border-radius: 6px; border: none;
+    background: #e3f2fd; color: #1976D2; cursor: pointer; font-weight: 500;
+  }
+  .voice-bar .btn-test:hover { background: #bbdefb; }
+
+  .tabs {
+    display: flex; gap: 4px; background: #fff; padding: 6px;
+    border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px;
+  }
+  .tab {
+    flex: 1; padding: 12px 16px; border: none; background: transparent;
+    border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 500;
+    color: #666; transition: all 0.15s; display: flex; flex-direction: column;
+    align-items: center; gap: 2px;
+  }
+  .tab:hover { background: #f5f5f5; color: #333; }
+  .tab.active { background: #4CAF50; color: #fff; box-shadow: 0 2px 8px rgba(76,175,80,0.3); }
+  .tab small { font-size: 11px; opacity: 0.8; font-weight: 400; }
+
+  .panel { display: none; }
+  .panel.active { display: block; animation: fade 0.2s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px);} to {opacity:1;transform:none;} }
+
+  .card {
+    background: #fff; border-radius: 12px; padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px;
+  }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .question-label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+    color: #999; font-weight: 600;
+  }
+  .question-label .counter { color: #999; font-weight: 400; text-transform: none; letter-spacing: 0; }
+
+  .q-play-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 0; }
+  .btn-listen {
+    padding: 13px 24px; font-size: 15px; border: none; border-radius: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;
+    cursor: pointer; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.15s; box-shadow: 0 2px 6px rgba(102,126,234,0.25);
+  }
+  .btn-listen:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(102,126,234,0.35); }
+  .btn-listen:active { transform: translateY(0); }
+  .btn-listen.playing {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    box-shadow: 0 4px 14px rgba(245,87,108,0.4);
+    animation: pulse 1.2s infinite;
+  }
+  .btn-reveal {
+    padding: 13px 22px; font-size: 15px; border: 1px solid #ddd;
+    border-radius: 10px; background: #fff; color: #333;
+    cursor: pointer; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: all 0.15s;
+  }
+  .btn-reveal:hover { background: #f5f5f5; border-color: #ccc; }
+
+  .q-hint {
+    margin-top: 10px; font-size: 13px; color: #999; font-style: italic;
+  }
+
+  .question {
+    font-size: 17px; line-height: 1.5; color: #222; padding: 12px 16px;
+    background: #f8f9fa; border-left: 3px solid #4CAF50; border-radius: 4px; margin: 14px 0 12px;
+  }
+  .cue-card {
+    background: #fffbea; border: 1px dashed #f0c419; border-radius: 8px;
+    padding: 16px; margin: 12px 0; line-height: 1.7; font-size: 15px;
+  }
+  .cue-card .cue-topic { font-size: 17px; font-weight: 600; margin-bottom: 10px; color: #222; }
+  .cue-card .cue-hint { color: #666; font-size: 14px; margin-bottom: 8px; }
+  .cue-card ul { padding-left: 22px; }
+
+  .topic-bar { display: flex; gap: 8px; align-items: center; }
+  .topic-bar select {
+    flex: 1; padding: 10px 12px; font-size: 15px; border-radius: 8px;
+    border: 1px solid #ddd; background: #fff; cursor: pointer; font-weight: 500;
+  }
+  .topic-bar button {
+    padding: 10px 16px; font-size: 14px; border-radius: 8px; border: none;
+    cursor: pointer; background: #e8f5e9; color: #2e7d32; font-weight: 500;
+  }
+  .topic-bar button:hover { background: #c8e6c9; }
+  .topic-bar .btn-del { background: #ffebee; color: #c62828; padding: 10px 14px; }
+  .topic-bar .btn-del:hover { background: #ffcdd2; }
+
+  .add-form {
+    margin-top: 14px; padding: 14px; background: #f8f9fa; border-radius: 8px; display: none;
+  }
+  .add-form.show { display: block; }
+  .add-form label { font-size: 13px; color: #666; display: block; margin: 10px 0 4px; }
+  .add-form label:first-child { margin-top: 0; }
+  .add-form code { background: #e0e0e0; padding: 1px 5px; border-radius: 3px; font-size: 12px; color: #333; }
+  .add-form input, .add-form textarea {
+    width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid #ddd;
+    border-radius: 6px; font-family: inherit;
+  }
+  .add-form textarea { min-height: 90px; resize: vertical; line-height: 1.5; }
+  .add-form .row { display: flex; gap: 8px; margin-top: 12px; }
+  .add-form .row button {
+    padding: 9px 18px; font-size: 14px; border: none; border-radius: 6px;
+    cursor: pointer; font-weight: 500;
+  }
+  .btn-save { background: #4CAF50; color: #fff; }
+  .btn-cancel { background: #eee; color: #333; }
+
+  .timer-wrap { margin-bottom: 4px; }
+  .timer-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+  .timer-fill {
+    height: 100%; width: 100%;
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    transition: width 1s linear;
+  }
+  .timer-fill.warning { background: linear-gradient(90deg, #ff9800, #ffc107); }
+  .timer-fill.danger  { background: linear-gradient(90deg, #f44336, #ff5722); }
+  .timer-text {
+    font-size: 12px; color: #888; margin-top: 4px;
+    display: flex; justify-content: space-between;
+  }
+  .timer-text .count { font-weight: 600; color: #4CAF50; }
+  .timer-text .count.warning { color: #ff9800; }
+  .timer-text .count.danger  { color: #f44336; }
+
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
+  button.btn {
+    padding: 11px 20px; font-size: 15px; border: none; border-radius: 8px;
+    cursor: pointer; font-weight: 500; transition: all 0.15s;
+  }
+  .btn-start { background: #4CAF50; color: #fff; }
+  .btn-start:hover:not(:disabled) { background: #43a047; }
+  .btn-stop { background: #f44336; color: #fff; }
+  .btn-stop:hover:not(:disabled) { background: #e53935; }
+  .btn-next { background: #2196F3; color: #fff; }
+  .btn-next:hover:not(:disabled) { background: #1976D2; }
+  .btn-clear { background: #eee; color: #333; }
+  .btn-clear:hover { background: #e0e0e0; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .status { font-size: 13px; color: #666; margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; }
+  .dot.rec { background: #f44336; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  .transcript {
+    min-height: 120px; max-height: 320px; overflow-y: auto;
+    background: #fafafa; border-radius: 8px; padding: 14px;
+    font-size: 16px; line-height: 1.6; border: 1px solid #eee;
+  }
+  .transcript:empty::before {
+    content: "Chưa có nội dung. Nhấn Bắt đầu nói...";
+    color: #bbb; font-style: italic;
+  }
+  .sentence {
+    padding: 8px 12px; margin: 6px 0; background: #fff;
+    border-left: 3px solid #4CAF50; border-radius: 4px; animation: fade 0.2s;
+  }
+  .sentence.interim { color: #999; font-style: italic; border-left-color: #ccc; background: #fcfcfc; }
+
+  .q-list { list-style: none; margin-top: 12px; }
+  .q-list li {
+    padding: 8px 12px; border-radius: 6px; font-size: 14px; color: #555;
+    cursor: pointer; border-left: 3px solid transparent; transition: all 0.15s;
+  }
+  .q-list li:hover { background: #f5f5f5; }
+  .q-list li.active { background: #e8f5e9; color: #2e7d32; font-weight: 500; border-left-color: #4CAF50; }
+  .q-list li.done { color: #999; text-decoration: line-through; }
+
+  .rec-list { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
+  .rec-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px;
+  }
+  .rec-item .rec-label {
+    flex: 1; color: #555; overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    line-height: 1.35;
+  }
+  .rec-item audio { height: 32px; flex-shrink: 0; }
+  .rec-item .btn-dl {
+    padding: 5px 10px; font-size: 12px; border: none; border-radius: 4px;
+    background: #e3f2fd; color: #1976D2; cursor: pointer; flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .rec-item .btn-dl:hover { background: #bbdefb; }
+  .empty-hint { color: #bbb; font-style: italic; font-size: 13px; padding: 4px 0; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #333; color: #fff; padding: 12px 24px; border-radius: 8px;
+    font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 999; pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-left">
+      <h1>🎤 Luyện nói IELTS</h1>
+      <p class="subtitle">Nghe câu hỏi → trả lời → xem chữ hiện ra — có ghi âm để nghe lại</p>
+    </div>
+    <div class="toolbar">
+      <button id="export-btn">⬇ Export JSON</button>
+      <button id="import-btn">⬆ Import JSON</button>
+      <input type="file" id="import-file" accept=".json,application/json" style="display:none">
+    </div>
+  </div>
+
+  <div class="voice-bar">
+    <label>🔈 Giọng đọc câu hỏi:</label>
+    <select id="engine-select">
+      <option value="browser">Trình duyệt (offline)</option>
+      <option value="google">Google TTS (cần mạng)</option>
+    </select>
+    <select id="voice-select"></select>
+    <button class="btn-test" id="test-voice-btn">🔊 Test</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="1">Part 1<small>Interview</small></button>
+    <button class="tab" data-tab="2">Part 2<small>Cue Card</small></button>
+    <button class="tab" data-tab="3">Part 3<small>Discussion</small></button>
+  </div>
+
+  <!-- ================= PART 1 ================= -->
+  <div class="panel active" id="panel-1">
+    <div class="card">
+      <div class="question-label">Topic</div>
+      <div class="topic-bar" style="margin-top:8px;">
+        <select id="topic-select"></select>
+        <button id="add-topic-btn">+ Thêm</button>
+        <button class="btn-del" id="del-topic-btn" title="Xóa topic">✕</button>
+      </div>
+      <div class="add-form" id="add-form-1">
+        <input id="new-topic-name" placeholder="Tên topic (VD: Hometown, Work & Study...)">
+        <label>Mỗi dòng 1 câu hỏi</label>
+        <textarea id="new-topic-questions" placeholder="Where are you from?&#10;What do you like about your hometown?"></textarea>
+        <div class="row">
+          <button class="btn-save" id="save-topic">Lưu topic</button>
+          <button class="btn-cancel" id="cancel-topic">Hủy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Câu hỏi</div>
+        <div class="question-label"><span class="counter" id="counter-1"></span></div>
+      </div>
+
+      <div class="q-play-bar">
+        <button class="btn-listen" id="listen-1" onclick="playQuestion(1)">🔊 Nghe câu hỏi</button>
+        <button class="btn-reveal" id="reveal-btn-1" onclick="toggleReveal(1)" style="display:none;">👁 Hiện câu hỏi</button>
+      </div>
+      <div class="q-hint" id="q-hint-1">Nhấn "Nghe câu hỏi" — câu hỏi sẽ được đọc lên. Sau đó mới hiện nút xem chữ.</div>
+
+      <div id="q-content-1" style="display:none;">
+        <div class="question" id="question-1">—</div>
+        <ul class="q-list" id="q-list-1"></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="timer-wrap">
+        <div class="timer-bar"><div class="timer-fill" id="timer-fill-1"></div></div>
+        <div class="timer-text">
+          <span>Thời gian mỗi câu (40s)</span>
+          <span class="count" id="timer-text-1">40s</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-start" id="start-1">▶ Bắt đầu (40s)</button>
+        <button class="btn btn-stop" id="stop-1" disabled>⏹ Dừng</button>
+        <button class="btn btn-next" id="next-1">Câu tiếp →</button>
+        <button class="btn btn-clear" id="clear-1">🗑 Xóa chữ</button>
+        <div class="status"><span class="dot" id="dot-1"></span><span id="status-1">Sẵn sàng</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="question-label">Câu trả lời của bạn</div>
+      <div class="transcript" id="transcript-1"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Bản ghi âm</div>
+        <button class="btn-clear" style="padding:5px 12px;font-size:12px;border-radius:6px;border:none;cursor:pointer;"
+                onclick="clearRecordings(1)">Xóa hết</button>
+      </div>
+      <div class="rec-list" id="rec-list-1"><div class="empty-hint">Chưa có bản ghi âm nào.</div></div>
+    </div>
+  </div>
+
+  <!-- ================= PART 2 ================= -->
+  <div class="panel" id="panel-2">
+    <div class="card">
+      <div class="question-label">Bộ topic — Part 2 + Part 3 (dùng chung)</div>
+      <div class="topic-bar" style="margin-top:8px;">
+        <select id="set-select"></select>
+        <button id="add-set-btn">+ Thêm bộ</button>
+        <button class="btn-del" id="del-set-btn" title="Xóa bộ">✕</button>
+      </div>
+      <div class="add-form" id="add-form-2">
+        <input id="new-set-name" placeholder="Tên bộ topic (VD: People, Places...)">
+        <label>Part 2 — Cue cards. Mỗi cue card cách bằng dòng <code>---</code>. Dòng đầu = chủ đề, dòng sau là gợi ý (bắt đầu bằng <code>-</code>)</label>
+        <textarea id="new-set-p2" placeholder="Describe a person you admire.&#10;- Who this person is&#10;- How you know about them&#10;---&#10;Describe a place you like to visit.&#10;- Where it is"></textarea>
+        <label>Part 3 — Câu hỏi thảo luận (mỗi dòng 1 câu)</label>
+        <textarea id="new-set-p3" placeholder="Why do people admire famous people?&#10;How has fame changed in modern society?"></textarea>
+        <div class="row">
+          <button class="btn-save" id="save-set">Lưu bộ topic</button>
+          <button class="btn-cancel" id="cancel-set">Hủy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Cue card</div>
+        <div class="question-label"><span class="counter" id="counter-2"></span></div>
+      </div>
+      <div id="cue-2" class="cue-card"></div>
+      <ul class="q-list" id="q-list-2"></ul>
+    </div>
+
+    <div class="card">
+      <div class="timer-wrap">
+        <div class="timer-bar"><div class="timer-fill" id="timer-fill-2"></div></div>
+        <div class="timer-text">
+          <span>Thời gian mỗi cue card (2 phút)</span>
+          <span class="count" id="timer-text-2">120s</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-start" id="start-2">▶ Bắt đầu (2 phút)</button>
+        <button class="btn btn-stop" id="stop-2" disabled>⏹ Dừng</button>
+        <button class="btn btn-next" id="next-2">Cue tiếp →</button>
+        <button class="btn btn-clear" id="clear-2">🗑 Xóa chữ</button>
+        <div class="status"><span class="dot" id="dot-2"></span><span id="status-2">Sẵn sàng</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="question-label">Bài nói của bạn</div>
+      <div class="transcript" id="transcript-2"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Bản ghi âm</div>
+        <button class="btn-clear" style="padding:5px 12px;font-size:12px;border-radius:6px;border:none;cursor:pointer;"
+                onclick="clearRecordings(2)">Xóa hết</button>
+      </div>
+      <div class="rec-list" id="rec-list-2"><div class="empty-hint">Chưa có bản ghi âm nào.</div></div>
+    </div>
+  </div>
+
+  <!-- ================= PART 3 ================= -->
+  <div class="panel" id="panel-3">
+    <div class="card">
+      <div class="question-label">Bộ topic (dùng chung với Part 2)</div>
+      <div class="topic-bar" style="margin-top:8px;">
+        <select id="set-select-3"></select>
+        <span style="font-size:13px;color:#999;padding:0 6px;">Thêm/sửa ở tab Part 2</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Câu hỏi thảo luận</div>
+        <div class="question-label"><span class="counter" id="counter-3"></span></div>
+      </div>
+
+      <div class="q-play-bar">
+        <button class="btn-listen" id="listen-3" onclick="playQuestion(3)">🔊 Nghe câu hỏi</button>
+        <button class="btn-reveal" id="reveal-btn-3" onclick="toggleReveal(3)" style="display:none;">👁 Hiện câu hỏi</button>
+      </div>
+      <div class="q-hint" id="q-hint-3">Nhấn "Nghe câu hỏi" — câu hỏi sẽ được đọc lên. Sau đó mới hiện nút xem chữ.</div>
+
+      <div id="q-content-3" style="display:none;">
+        <div class="question" id="question-3">—</div>
+        <ul class="q-list" id="q-list-3"></ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="timer-wrap">
+        <div class="timer-bar"><div class="timer-fill" id="timer-fill-3"></div></div>
+        <div class="timer-text">
+          <span>Thời gian mỗi câu (40s)</span>
+          <span class="count" id="timer-text-3">40s</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-start" id="start-3">▶ Bắt đầu (40s)</button>
+        <button class="btn btn-stop" id="stop-3" disabled>⏹ Dừng</button>
+        <button class="btn btn-next" id="next-3">Câu tiếp →</button>
+        <button class="btn btn-clear" id="clear-3">🗑 Xóa chữ</button>
+        <div class="status"><span class="dot" id="dot-3"></span><span id="status-3">Sẵn sàng</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="question-label">Câu trả lời của bạn</div>
+      <div class="transcript" id="transcript-3"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="question-label">Bản ghi âm</div>
+        <button class="btn-clear" style="padding:5px 12px;font-size:12px;border-radius:6px;border:none;cursor:pointer;"
+                onclick="clearRecordings(3)">Xóa hết</button>
+      </div>
+      <div class="rec-list" id="rec-list-3"><div class="empty-hint">Chưa có bản ghi âm nào.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================== CẤU HÌNH ================== */
+const DURATIONS = { 1: 40, 2: 120, 3: 40 };
+const LANG = 'en-US';
+const TTS_RATE = 0.95;
+const TOPIC_KEY = 'ielts_topics_v1';
+const SETS_KEY  = 'ielts_sets_v1';
+const EXPORT_VERSION = 1;
+
+/* ================== DỮ LIỆU MẶC ĐỊNH ================== */
+const DEFAULT_TOPICS = [
+  { name: 'Work & Study', questions: [
+      'Do you work or are you a student?',
+      'What do you like most about your job or studies?',
+      'Would you like to change your job in the future?'
+  ]},
+  { name: 'Hometown', questions: [
+      'Where is your hometown?',
+      'What do you like most about your hometown?',
+      'Has your hometown changed much in recent years?'
+  ]},
+  { name: 'Hobbies', questions: [
+      'What do you usually do in your free time?',
+      'Do you have any hobbies that you enjoy?',
+      'Have your hobbies changed since you were a child?'
+  ]},
+];
+
+const DEFAULT_SETS = [
+  {
+    name: 'People',
+    part2: [{ topic: 'Describe a person you admire.', bullets: [
+      'Who this person is', 'How you know about them',
+      'What qualities they have', 'And explain why you admire them'
+    ]}],
+    part3: [
+      'Why do people admire famous people?',
+      'How has fame changed in modern society?',
+      'Should children have role models? Why?'
+    ]
+  },
+  {
+    name: 'Places',
+    part2: [{ topic: 'Describe a place you like to visit.', bullets: [
+      'Where it is', 'How often you go there',
+      'What you do there', 'And explain why you like it'
+    ]}],
+    part3: [
+      'Why do people enjoy travelling to new places?',
+      'How does tourism affect local communities?',
+      'Do you think people will travel more or less in the future?'
+    ]
+  }
+];
+
+/* ================== STATE ================== */
+let topics   = loadJSON(TOPIC_KEY, DEFAULT_TOPICS);
+let sets     = loadJSON(SETS_KEY, DEFAULT_SETS);
+let topicIdx = 0, setIdx = 0;
+let q1Idx = 0, q2Idx = 0, q3Idx = 0;
+const recordings = { 1: [], 2: [], 3: [] };
+
+const qState = {
+  1: { played: false, revealed: false },
+  3: { played: false, revealed: false },
+};
+
+let ttsEngine = 'browser';
+let ttsVoice = null;
+let currentAudio = null;
+
+function loadJSON(key, fallback) {
+  try { const raw = localStorage.getItem(key); if (raw) return JSON.parse(raw); } catch(e) {}
+  return JSON.parse(JSON.stringify(fallback));
+}
+function saveTopics() { localStorage.setItem(TOPIC_KEY, JSON.stringify(topics)); }
+function saveSets()   { localStorage.setItem(SETS_KEY,  JSON.stringify(sets));   }
+
+/* ================== TABS ================== */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const id = tab.dataset.tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === tab));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + id));
+    [1,2,3].forEach(p => {
+      if (String(p) !== String(id) && engines[p]?.isRecording) stopAll(p);
+    });
+    stopTTS();
+  });
+});
+
+/* ================== TTS ================== */
+function stopTTS() {
+  try { speechSynthesis.cancel(); } catch(e) {}
+  if (currentAudio) {
+    try { currentAudio.pause(); } catch(e) {}
+    currentAudio = null;
+  }
+  [1,2,3].forEach(p =>
+    document.getElementById(`listen-${p}`)?.classList.remove('playing'));
+}
+
+function getQuestionText(part) {
+  if (part === 1) {
+    const t = topics[topicIdx];
+    return t?.questions[q1Idx] || '';
+  }
+  if (part === 3) {
+    const s = sets[setIdx];
+    return s?.part3[q3Idx] || '';
+  }
+  return '';
+}
+
+function loadVoices() {
+  if (!('speechSynthesis' in window)) return [];
+  return speechSynthesis.getVoices();
+}
+
+function pickBestVoice() {
+  const voices = loadVoices();
+  if (!voices.length) return null;
+  const priorities = [
+    v => v.name.includes('Google US English'),
+    v => v.name.includes('Google UK English Female'),
+    v => v.name === 'Samantha',
+    v => v.name.includes('Microsoft Aria'),
+    v => v.name.includes('Microsoft Jenny'),
+    v => v.name.includes('Microsoft Guy'),
+    v => v.name.includes('Microsoft Zira'),
+    v => /en-US/i.test(v.lang) && v.localService === false,
+    v => /en-US/i.test(v.lang),
+    v => /^en/i.test(v.lang),
+  ];
+  for (const test of priorities) {
+    const found = voices.find(test);
+    if (found) return found;
+  }
+  return voices[0];
+}
+
+function populateVoiceSelect() {
+  const sel = document.getElementById('voice-select');
+  if (!sel) return;
+  const voices = loadVoices().filter(v => /^en/i.test(v.lang));
+  if (!voices.length) {
+    sel.innerHTML = '<option>Chưa có voice</option>';
+    return;
+  }
+  const prev = sel.value;
+  sel.replaceChildren();
+  voices.forEach((v, i) => sel.add(new Option(v.name + ' (' + v.lang + ')', String(i))));
+  const best = ttsVoice || pickBestVoice();
+  const index = voices.findIndex(v => v.name === best?.name);
+  sel.value = String(index < 0 ? 0 : index);
+  ttsVoice = voices[Number(sel.value)];
+}
+const $ = id => document.getElementById(id);
+let toastTimer;
+function toast(message) {
+  $('toast').textContent = message;
+  $('toast').classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => $('toast').classList.remove('show'), 3500);
+}
+function persist(key, value) {
+  try { localStorage.setItem(key, JSON.stringify(value)); }
+  catch(e) { toast('Đã cập nhật, nhưng trình duyệt không cho lưu. Hãy Export JSON để giữ dữ liệu.'); }
+}
+saveTopics = () => persist(TOPIC_KEY, topics);
+saveSets = () => persist(SETS_KEY, sets);
+function validTopics(value) {
+  return Array.isArray(value) && value.every(t => t && typeof t.name === 'string' && Array.isArray(t.questions) && t.questions.every(q => typeof q === 'string'));
+}
+function validSets(value) {
+  return Array.isArray(value) && value.every(s => s && typeof s.name === 'string' && Array.isArray(s.part2) && s.part2.every(c => c && typeof c.topic === 'string' && Array.isArray(c.bullets) && c.bullets.every(b => typeof b === 'string')) && Array.isArray(s.part3) && s.part3.every(q => typeof q === 'string'));
+}
+if (!validTopics(topics)) topics = JSON.parse(JSON.stringify(DEFAULT_TOPICS));
+if (!validSets(sets)) sets = JSON.parse(JSON.stringify(DEFAULT_SETS));
+const engines = {};
+[1,2,3].forEach(p => engines[p] = { isRecording: false, timer: null, recognition: null, recorder: null, stream: null, starting: false, token: 0 });
+function resetReveal(p) {
+  if (!qState[p]) return;
+  qState[p] = { played: false, revealed: false };
+  $('q-content-' + p).style.display = 'none';
+  $('reveal-btn-' + p).style.display = 'none';
+  $('reveal-btn-' + p).textContent = '👁 Hiện câu hỏi';
+  $('q-hint-' + p).style.display = '';
+}
+function toggleReveal(p) {
+  qState[p].revealed = !qState[p].revealed;
+  $('q-content-' + p).style.display = qState[p].revealed ? '' : 'none';
+  $('reveal-btn-' + p).textContent = qState[p].revealed ? '🙈 Ẩn câu hỏi' : '👁 Hiện câu hỏi';
+}
+function speak(text, button) {
+  stopTTS();
+  if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) { toast('Trình duyệt này không hỗ trợ đọc câu hỏi. Bạn có thể xem chữ.'); return; }
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = LANG; utterance.rate = TTS_RATE; utterance.voice = ttsVoice;
+  button?.classList.add('playing');
+  utterance.onend = () => button?.classList.remove('playing');
+  utterance.onerror = () => { button?.classList.remove('playing'); toast('Không đọc được câu hỏi. Hãy thử giọng khác.'); };
+  speechSynthesis.speak(utterance);
+}
+function playQuestion(p) {
+  const text = getQuestionText(p);
+  if (!text) return toast('Chưa có câu hỏi. Hãy thêm topic.');
+  qState[p].played = true;
+  $('reveal-btn-' + p).style.display = '';
+  $('q-hint-' + p).style.display = 'none';
+  speak(text, $('listen-' + p));
+}
+$('engine-select').querySelector('[value="google"]').disabled = true;
+$('engine-select').querySelector('[value="google"]').textContent = 'Google TTS (chưa tích hợp)';
+$('voice-select').onchange = () => { ttsVoice = loadVoices().filter(v => /^en/i.test(v.lang))[Number($('voice-select').value)] || null; };
+$('test-voice-btn').onclick = () => speak('Hello! Let us practise IELTS speaking together.');
+if (window.speechSynthesis) speechSynthesis.addEventListener('voiceschanged', populateVoiceSelect);
+populateVoiceSelect();
+function populateTopics() {
+  $('topic-select').replaceChildren();
+  topics.forEach((t,i) => $('topic-select').add(new Option(t.name, String(i))));
+  if (!topics.length) $('topic-select').add(new Option('Chưa có topic', ''));
+  $('topic-select').value = topics.length ? String(topicIdx) : '';
+}
+function populateSets() {
+  ['set-select','set-select-3'].forEach(id => {
+    $(id).replaceChildren();
+    sets.forEach((s,i) => $(id).add(new Option(s.name, String(i))));
+    if (!sets.length) $(id).add(new Option('Chưa có bộ topic', ''));
+    $(id).value = sets.length ? String(setIdx) : '';
+  });
+}
+function render(p) {
+  const items = p === 1 ? topics[topicIdx]?.questions || [] : p === 2 ? sets[setIdx]?.part2 || [] : sets[setIdx]?.part3 || [];
+  const index = p === 1 ? q1Idx : p === 2 ? q2Idx : q3Idx;
+  $('counter-' + p).textContent = items.length ? `${index + 1} / ${items.length}` : '0 / 0';
+  $('q-list-' + p).replaceChildren();
+  items.forEach((q,i) => {
+    const li = document.createElement('li');
+    li.textContent = p === 2 ? q.topic : q;
+    li.classList.toggle('active', i === index);
+    li.onclick = () => { stopAll(p); stopTTS(); if (p === 1) q1Idx = i; else if (p === 2) q2Idx = i; else q3Idx = i; resetReveal(p); render(p); };
+    $('q-list-' + p).append(li);
+  });
+  if (p === 2) {
+    $('cue-2').replaceChildren();
+    const cue = items[index];
+    if (cue) {
+      const title = document.createElement('div'); title.className = 'cue-topic'; title.textContent = cue.topic;
+      const hint = document.createElement('div'); hint.className = 'cue-hint'; hint.textContent = 'You should say:';
+      const list = document.createElement('ul');
+      cue.bullets.forEach(b => { const li = document.createElement('li'); li.textContent = b; list.append(li); });
+      $('cue-2').append(title, hint, list);
+    } else $('cue-2').textContent = 'Chưa có cue card. Hãy thêm bộ topic.';
+  } else $('question-' + p).textContent = items[index] || 'Chưa có câu hỏi.';
+  $('next-' + p).disabled = items.length < 2;
+  $('start-' + p).disabled = !items.length || engines[p].isRecording;
+  updateTimer(p, DURATIONS[p]);
+}
+function changeTopic() { stopAll(1); stopTTS(); topicIdx = Number($('topic-select').value); q1Idx = 0; resetReveal(1); render(1); }
+function changeSet(value) { stopAll(2); stopAll(3); stopTTS(); setIdx = Number(value); q2Idx = q3Idx = 0; populateSets(); resetReveal(3); render(2); render(3); }
+$('topic-select').onchange = changeTopic;
+$('set-select').onchange = () => changeSet($('set-select').value);
+$('set-select-3').onchange = () => changeSet($('set-select-3').value);
+$('add-topic-btn').onclick = () => { $('add-form-1').classList.toggle('show'); $('new-topic-name').focus(); };
+$('cancel-topic').onclick = () => $('add-form-1').classList.remove('show');
+$('add-set-btn').onclick = () => { $('add-form-2').classList.toggle('show'); $('new-set-name').focus(); };
+$('cancel-set').onclick = () => $('add-form-2').classList.remove('show');
+const lines = text => text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+$('save-topic').onclick = () => {
+  const name = $('new-topic-name').value.trim(), questions = lines($('new-topic-questions').value);
+  if (!name || !questions.length) return toast('Nhập tên topic và ít nhất một câu hỏi.');
+  stopAll(1); stopTTS(); topics.push({name, questions}); topicIdx = topics.length - 1; q1Idx = 0;
+  saveTopics(); populateTopics(); resetReveal(1); render(1);
+  $('add-form-1').classList.remove('show'); $('new-topic-name').value = $('new-topic-questions').value = ''; toast('Đã thêm topic.');
+};
+$('save-set').onclick = () => {
+  const name = $('new-set-name').value.trim();
+  const part2 = $('new-set-p2').value.split(/^\s*---\s*$/m).map(block => {
+    const rows = lines(block); return { topic: rows[0] || '', bullets: rows.slice(1).map(s => s.replace(/^[-•]\s*/, '')) };
+  }).filter(c => c.topic);
+  const part3 = lines($('new-set-p3').value);
+  if (!name || !part2.length || !part3.length) return toast('Nhập tên bộ, ít nhất một cue card và một câu hỏi Part 3.');
+  sets.push({name, part2, part3}); saveSets(); changeSet(sets.length - 1);
+  $('add-form-2').classList.remove('show'); ['new-set-name','new-set-p2','new-set-p3'].forEach(id => $(id).value = ''); toast('Đã thêm bộ topic.');
+};
+$('del-topic-btn').onclick = () => {
+  if (!topics.length || !confirm('Xóa topic "' + topics[topicIdx].name + '"?')) return;
+  stopAll(1); topics.splice(topicIdx, 1); topicIdx = 0; q1Idx = 0; saveTopics(); populateTopics(); resetReveal(1); render(1);
+};
+$('del-set-btn').onclick = () => {
+  if (!sets.length || !confirm('Xóa bộ "' + sets[setIdx].name + '"?')) return;
+  sets.splice(setIdx, 1); saveSets(); changeSet(0);
+};
+function updateTimer(p, left) {
+  const level = left <= 10 ? 'danger' : left <= DURATIONS[p] / 3 ? 'warning' : '';
+  $('timer-fill-' + p).style.width = (left / DURATIONS[p] * 100) + '%';
+  $('timer-fill-' + p).className = 'timer-fill ' + level;
+  $('timer-text-' + p).className = 'count ' + level;
+  $('timer-text-' + p).textContent = left + 's';
+}
+function renderRecordings(p) {
+  const list = $('rec-list-' + p); list.replaceChildren();
+  if (!recordings[p].length) { const hint = document.createElement('div'); hint.className = 'empty-hint'; hint.textContent = 'Chưa có bản ghi âm nào.'; list.append(hint); }
+  recordings[p].forEach((rec,i) => {
+    const row = document.createElement('div'); row.className = 'rec-item';
+    const label = document.createElement('span'); label.className = 'rec-label'; label.textContent = rec.label;
+    const audio = document.createElement('audio'); audio.controls = true; audio.src = rec.url;
+    const download = document.createElement('button'); download.className = 'btn-dl'; download.textContent = 'Tải';
+    download.onclick = () => { const a = document.createElement('a'); a.href = rec.url; a.download = `ielts-part-${p}-${i+1}.${rec.ext}`; a.click(); };
+    row.append(label, audio, download); list.append(row);
+  });
+}
+function clearRecordings(p) { recordings[p].forEach(r => URL.revokeObjectURL(r.url)); recordings[p] = []; renderRecordings(p); }
+function stopAll(p) {
+  const e = engines[p]; e.token++; e.starting = false; e.isRecording = false;
+  clearInterval(e.timer); e.timer = null;
+  try { e.recognition?.stop(); } catch(err) {}
+  e.recognition = null;
+  if (e.recorder && e.recorder.state !== 'inactive') e.recorder.stop();
+  e.stream?.getTracks().forEach(t => t.stop()); e.stream = null;
+  $('start-' + p).disabled = false; $('stop-' + p).disabled = true;
+  $('dot-' + p).classList.remove('rec'); $('status-' + p).textContent = 'Sẵn sàng';
+}
+async function start(p) {
+  const e = engines[p]; if (e.isRecording || e.starting) return;
+  if (p !== 2 && !getQuestionText(p) || p === 2 && !sets[setIdx]?.part2[q2Idx]) return toast('Chưa có câu hỏi.');
+  [1,2,3].forEach(stopAll); stopTTS(); e.starting = true; const token = ++e.token;
+  $('start-' + p).disabled = true;
+  try {
+    if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) throw new Error('unsupported');
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    if (token !== e.token) { stream.getTracks().forEach(t => t.stop()); return; }
+    e.stream = stream;
+    const chunks = [], label = p === 2 ? sets[setIdx].part2[q2Idx].topic : getQuestionText(p);
+    const recorder = new MediaRecorder(stream); e.recorder = recorder;
+    recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
+    recorder.onstop = () => {
+      if (!chunks.length) return;
+      const mime = recorder.mimeType || chunks[0].type;
+      const blob = new Blob(chunks, {type: mime});
+      recordings[p].push({url: URL.createObjectURL(blob), label, ext: mime.includes('mp4') ? 'm4a' : mime.includes('ogg') ? 'ogg' : 'webm'}); renderRecordings(p);
+    };
+    recorder.start(); e.isRecording = true; e.starting = false;
+    $('stop-' + p).disabled = false; $('dot-' + p).classList.add('rec'); $('status-' + p).textContent = 'Đang ghi âm';
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (Recognition) {
+      const recognition = new Recognition(); e.recognition = recognition;
+      recognition.lang = LANG; recognition.continuous = true; recognition.interimResults = true;
+      recognition.onresult = event => {
+        $('transcript-' + p).querySelector('.interim')?.remove();
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const text = event.results[i][0].transcript;
+          if (event.results[i].isFinal) { const line = document.createElement('div'); line.className = 'sentence'; line.textContent = text; $('transcript-' + p).append(line); }
+          else interim += text;
+        }
+        if (interim) { const line = document.createElement('div'); line.className = 'sentence interim'; line.textContent = interim; $('transcript-' + p).append(line); }
+      };
+      recognition.onerror = () => { $('status-' + p).textContent = 'Đang ghi âm (không nhận dạng được chữ)'; };
+      recognition.onend = () => { if (e.isRecording && e.recognition === recognition) { try { recognition.start(); } catch(err) {} } };
+      try { recognition.start(); } catch(err) { toast('Vẫn ghi âm, nhưng không bật được nhận dạng giọng nói.'); }
+    } else toast('Trình duyệt vẫn ghi âm nhưng không hỗ trợ chuyển giọng nói thành chữ.');
+    let left = DURATIONS[p]; updateTimer(p, left);
+    e.timer = setInterval(() => { updateTimer(p, --left); if (left <= 0) stopAll(p); }, 1000);
+  } catch(err) { stopAll(p); toast(err.message === 'unsupported' ? 'Trình duyệt không hỗ trợ ghi âm ở trang này.' : 'Không mở được micro. Hãy kiểm tra quyền micro của trình duyệt.'); }
+}
+[1,2,3].forEach(p => {
+  $('start-' + p).onclick = () => start(p);
+  $('stop-' + p).onclick = () => stopAll(p);
+  $('clear-' + p).onclick = () => $('transcript-' + p).replaceChildren();
+  $('next-' + p).onclick = () => {
+    stopAll(p); stopTTS();
+    if (p === 1) q1Idx = (q1Idx + 1) % (topics[topicIdx]?.questions.length || 1);
+    if (p === 2) q2Idx = (q2Idx + 1) % (sets[setIdx]?.part2.length || 1);
+    if (p === 3) q3Idx = (q3Idx + 1) % (sets[setIdx]?.part3.length || 1);
+    resetReveal(p); render(p);
+  };
+});
+$('export-btn').onclick = () => {
+  const blob = new Blob([JSON.stringify({version: EXPORT_VERSION, topics, sets}, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob), a = document.createElement('a');
+  a.href = url; a.download = 'ielts-topics.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+$('import-btn').onclick = () => $('import-file').click();
+$('import-file').onchange = async () => {
+  const file = $('import-file').files[0]; if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!validTopics(data.topics) || !validSets(data.sets)) throw new Error('invalid');
+    if (!confirm('Thay thế các topic hiện tại bằng dữ liệu trong file?')) return;
+    [1,2,3].forEach(stopAll); stopTTS(); topics = data.topics; sets = data.sets;
+    topicIdx = setIdx = q1Idx = q2Idx = q3Idx = 0;
+    saveTopics(); saveSets(); populateTopics(); populateSets(); resetReveal(1); resetReveal(3); [1,2,3].forEach(render); toast('Đã nhập dữ liệu.');
+  } catch(err) { toast('File JSON không đúng định dạng. Hãy chọn file đã Export từ ứng dụng.'); }
+  finally { $('import-file').value = ''; }
+};
+populateTopics(); populateSets(); [1,2,3].forEach(render);
+</script>
+</body>
+</html>
