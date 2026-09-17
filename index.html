@@ -12,6 +12,7 @@
   }
   .container { max-width: 860px; margin: 0 auto; }
 
+  /* --- HEADER --- */
   .header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
   .header-left h1 { font-size: 24px; margin-bottom: 4px; }
   .header-left .subtitle { color: #666; font-size: 14px; }
@@ -19,10 +20,11 @@
   .toolbar button {
     padding: 9px 16px; font-size: 13px; border-radius: 8px; border: 1px solid #ddd;
     background: #fff; cursor: pointer; font-weight: 500; color: #333;
+    display: flex; align-items: center; gap: 6px;
   }
   .toolbar button:hover { background: #f5f5f5; }
 
-  /* VOICE BAR */
+  /* --- VOICE BAR --- */
   .voice-bar {
     display: flex; align-items: center; gap: 8px; background: #fff;
     padding: 10px 14px; border-radius: 10px; margin-bottom: 14px;
@@ -41,6 +43,7 @@
   }
   .voice-bar .btn-test:hover { background: #bbdefb; }
 
+  /* --- TABS --- */
   .tabs {
     display: flex; gap: 4px; background: #fff; padding: 6px;
     border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 20px;
@@ -70,6 +73,7 @@
   }
   .question-label .counter { color: #999; font-weight: 400; text-transform: none; letter-spacing: 0; }
 
+  /* --- PLAY BAR (TTS) --- */
   .q-play-bar { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 0; }
   .btn-listen {
     padding: 13px 24px; font-size: 15px; border: none; border-radius: 10px;
@@ -84,10 +88,6 @@
     background: linear-gradient(135deg, #f093fb, #f5576c);
     box-shadow: 0 4px 14px rgba(245,87,108,0.4);
     animation: pulse 1.2s infinite;
-  }
-  @keyframes pulse {
-    0%,100% { opacity: 1; }
-    50% { opacity: 0.75; }
   }
   .btn-reveal {
     padding: 13px 22px; font-size: 15px; border: 1px solid #ddd;
@@ -104,8 +104,7 @@
 
   .question {
     font-size: 17px; line-height: 1.5; color: #222; padding: 12px 16px;
-    background: #f8f9fa; border-left: 3px solid #4CAF50; border-radius: 4px;
-    margin: 14px 0 12px;
+    background: #f8f9fa; border-left: 3px solid #4CAF50; border-radius: 4px; margin: 14px 0 12px;
   }
   .cue-card {
     background: #fffbea; border: 1px dashed #f0c419; border-radius: 8px;
@@ -115,6 +114,7 @@
   .cue-card .cue-hint { color: #666; font-size: 14px; margin-bottom: 8px; }
   .cue-card ul { padding-left: 22px; }
 
+  /* --- TOPIC BAR --- */
   .topic-bar { display: flex; gap: 8px; align-items: center; }
   .topic-bar select {
     flex: 1; padding: 10px 12px; font-size: 15px; border-radius: 8px;
@@ -128,6 +128,7 @@
   .topic-bar .btn-del { background: #ffebee; color: #c62828; padding: 10px 14px; }
   .topic-bar .btn-del:hover { background: #ffcdd2; }
 
+  /* --- FORM --- */
   .add-form {
     margin-top: 14px; padding: 14px; background: #f8f9fa; border-radius: 8px; display: none;
   }
@@ -148,6 +149,7 @@
   .btn-save { background: #4CAF50; color: #fff; }
   .btn-cancel { background: #eee; color: #333; }
 
+  /* --- TIMER --- */
   .timer-wrap { margin-bottom: 4px; }
   .timer-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
   .timer-fill {
@@ -165,6 +167,7 @@
   .timer-text .count.warning { color: #ff9800; }
   .timer-text .count.danger  { color: #f44336; }
 
+  /* --- CONTROLS --- */
   .controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
   button.btn {
     padding: 11px 20px; font-size: 15px; border: none; border-radius: 8px;
@@ -183,7 +186,9 @@
   .status { font-size: 13px; color: #666; margin-left: auto; display: flex; align-items: center; gap: 6px; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; }
   .dot.rec { background: #f44336; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+  /* --- TRANSCRIPT --- */
   .transcript {
     min-height: 120px; max-height: 320px; overflow-y: auto;
     background: #fafafa; border-radius: 8px; padding: 14px;
@@ -199,6 +204,7 @@
   }
   .sentence.interim { color: #999; font-style: italic; border-left-color: #ccc; background: #fcfcfc; }
 
+  /* --- Q LIST --- */
   .q-list { list-style: none; margin-top: 12px; }
   .q-list li {
     padding: 8px 12px; border-radius: 6px; font-size: 14px; color: #555;
@@ -208,6 +214,7 @@
   .q-list li.active { background: #e8f5e9; color: #2e7d32; font-weight: 500; border-left-color: #4CAF50; }
   .q-list li.done { color: #999; text-decoration: line-through; }
 
+  /* --- RECORDINGS --- */
   .rec-list { display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto; }
   .rec-item {
     display: flex; align-items: center; gap: 10px;
@@ -240,7 +247,7 @@
   <div class="header">
     <div class="header-left">
       <h1>🎤 Luyện nói IELTS</h1>
-      <p class="subtitle">Nghe câu hỏi → trả lời → xem chữ hiện ra</p>
+      <p class="subtitle">Nghe câu hỏi → trả lời → xem chữ hiện ra — có ghi âm để nghe lại</p>
     </div>
     <div class="toolbar">
       <button id="export-btn">⬇ Export JSON</button>
@@ -249,9 +256,9 @@
     </div>
   </div>
 
-  <!-- VOICE BAR -->
+  <!-- ===== VOICE BAR ===== -->
   <div class="voice-bar">
-    <label>🔈 Giọng đọc:</label>
+    <label>🔈 Giọng đọc câu hỏi:</label>
     <select id="engine-select">
       <option value="browser">Trình duyệt (offline)</option>
       <option value="google">Google TTS (cần mạng)</option>
@@ -518,12 +525,13 @@ const DEFAULT_SETS = [
 ];
 
 /* ================== STATE ================== */
-let topics = loadJSON(TOPIC_KEY, DEFAULT_TOPICS);
-let sets   = loadJSON(SETS_KEY,  DEFAULT_SETS);
+let topics   = loadJSON(TOPIC_KEY, DEFAULT_TOPICS);
+let sets     = loadJSON(SETS_KEY, DEFAULT_SETS);
 let topicIdx = 0, setIdx = 0;
 let q1Idx = 0, q2Idx = 0, q3Idx = 0;
 const recordings = { 1: [], 2: [], 3: [] };
 
+/* Trạng thái ẩn/hiện câu hỏi Part 1 & 3 */
 const qState = {
   1: { played: false, revealed: false },
   3: { played: false, revealed: false },
@@ -591,31 +599,4 @@ function pickBestVoice() {
     v => v.name === 'Samantha',
     v => v.name.includes('Microsoft Aria'),
     v => v.name.includes('Microsoft Jenny'),
-    v => v.name.includes('Microsoft Guy'),
-    v => v.name.includes('Microsoft Zira'),
-    v => /en-US/i.test(v.lang) && v.localService === false,
-    v => /en-US/i.test(v.lang),
-    v => /^en/i.test(v.lang),
-  ];
-  for (const test of priorities) {
-    const found = voices.find(test);
-    if (found) return found;
-  }
-  return voices[0];
-}
-
-function populateVoiceSelect() {
-  const sel = document.getElementById('voice-select');
-  if (!sel) return;
-  const voices = loadVoices().filter(v => /^en/i.test(v.lang));
-  if (!voices.length) {
-    sel.innerHTML = '<option>Chưa có voice</option>';
-    return;
-  }
-  const currentVal = sel.value;
-  sel.innerHTML = voices.map(v =>
-    `<option value="${esc(v.name)}">${esc(v.name)} — ${esc(v.lang)}</option>`
-  ).join('');
-
-  if (currentVal && voices.find(v => v.name === currentVal)) {
-    sel.value = currentVal;
+    v => v.name.includes('Microsoft Guy
