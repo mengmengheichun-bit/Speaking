@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "topics": [
+    {
+      "name": "Work & Study",
+      "questions": [
+        "Do you work or are you a student?",
+        "What do you like most about your job or studies?",
+        "Would you like to change your job in the future?"
+      ]
+    },
+    {
+      "name": "Hometown",
+      "questions": [
+        "Where is your hometown?",
+        "What do you like most about your hometown?",
+        "Has your hometown changed much in recent years?"
+      ]
+    },
+    {
+      "name": "Hobbies",
+      "questions": [
+        "What do you usually do in your free time?",
+        "Do you have any hobbies that you enjoy?",
+        "Have your hobbies changed since you were a child?"
+      ]
+    }
+  ],
+  "sets": [
+    {
+      "name": "People",
+      "part2": [
+        {
+          "topic": "Describe a person you admire.",
+          "bullets": [
+            "Who this person is",
+            "How you know about them",
+            "What qualities they have",
+            "And explain why you admire them"
+          ]
+        }
+      ],
+      "part3": [
+        "Why do people admire famous people?",
+        "How has fame changed in modern society?",
+        "Should children have role models? Why?"
+      ]
+    },
+    {
+      "name": "Places",
+      "part2": [
+        {
+          "topic": "Describe a place you like to visit.",
+          "bullets": [
+            "Where it is",
+            "How often you go there",
+            "What you do there",
+            "And explain why you like it"
+          ]
+        }
+      ],
+      "part3": [
+        "Why do people enjoy travelling to new places?",
+        "How does tourism affect local communities?",
+        "Do you think people will travel more or less in the future?"
+      ]
+    },
+    {
+      "name": "morning 1",
+      "part2": [
+        {
+          "topic": "Describe a time when you need to get up early?",
+          "bullets": []
+        }
+      ],
+      "part3": [
+        "1. Why do some people find it difficult to get up early?",
+        "2. What are the advantages and disadvantages of getting up early?",
+        "3. Do you think people are more productive in the morning or in the evening?",
+        "4. Should schools and workplaces start later in the morning?",
+        "5. How has modern technology affected people’s sleeping habits?",
+        "6. Why do some people stay up late even when they know they have to get up early the next day?",
+        "7. Have you ever had to get up so early that by the end of the day, you felt completely exhausted?"
+      ]
+    }
+  ]
+}
